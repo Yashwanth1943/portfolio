@@ -1,4 +1,4 @@
-import React from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './index.scss';
 
 const educationData = [
@@ -23,12 +23,43 @@ const educationData = [
 ];
 
 const Education = () => {
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const itemRefs = useRef([]);
+
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-28% 0px -40% 0px", // triggers when item is roughly in the center viewport
+      threshold: 0.15,
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const index = parseInt(entry.target.getAttribute('data-index'), 10);
+          setActiveIndex(index);
+        }
+      });
+    }, observerOptions);
+
+    itemRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="education-container">
       <h1 className="education-title">Education</h1>
       <div className="timeline">
         {educationData.map((item, index) => (
-          <div key={index} className="timeline-item">
+          <div
+            key={index}
+            ref={(el) => (itemRefs.current[index] = el)}
+            data-index={index}
+            className={`timeline-item ${activeIndex === index ? 'active' : ''}`}
+          >
             <div className="timeline-dot"></div>
             <div className="timeline-content">
               <span className="timeline-period">{item.period}</span>

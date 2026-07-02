@@ -72,6 +72,10 @@ const App = () => {
 
   const handleSplashComplete = useCallback(() => {
     setShowSplash(false);
+    // Fallback: Ensure content is revealed even if layout animation callback fails
+    setTimeout(() => {
+      setRevealContent(true);
+    }, 850);
   }, []);
 
   const handleBrandTransitionComplete = useCallback(() => {

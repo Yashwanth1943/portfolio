@@ -28,10 +28,13 @@ const First5Seconds = memo(({ onComplete }) => {
   return (
     <motion.div
       className="splash-overlay"
-      initial={{ opacity: 1 }}
-      exit={{ opacity: 0, transition: { duration: 0.55, ease: "easeInOut" } }}
+      initial={{ backgroundColor: "#060608" }}
+      exit={{ backgroundColor: "rgba(6, 6, 8, 0)", transition: { duration: 0.55, ease: "easeInOut" } }}
     >
-      <div className="splash-ambient-bg" />
+      <motion.div 
+        className="splash-ambient-bg" 
+        exit={{ opacity: 0, transition: { duration: 0.45, ease: "easeInOut" } }}
+      />
 
       {step === 0 && (
         <div className="splash-rings-container">
@@ -80,7 +83,12 @@ const First5Seconds = memo(({ onComplete }) => {
               animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
               transition={{ duration: 0.6, ease: EASE }}
             >
-              <span className="splash-im-label">I&apos;m</span>
+              <motion.span 
+                className="splash-im-label"
+                exit={{ opacity: 0, transition: { duration: 0.3 } }}
+              >
+                I&apos;m
+              </motion.span>
               <motion.span
                 className="splash-brand-name"
                 layoutId="portfolio-brand-name"
@@ -90,7 +98,10 @@ const First5Seconds = memo(({ onComplete }) => {
               </motion.span>
             </motion.div>
 
-            <div className="splash-subtitle-container">
+            <motion.div 
+              className="splash-subtitle-container"
+              exit={{ opacity: 0, transition: { duration: 0.35 } }}
+            >
               <motion.p
                 className="splash-tagline"
                 initial={{ opacity: 0, y: 8 }}
@@ -109,7 +120,7 @@ const First5Seconds = memo(({ onComplete }) => {
                   transition={{ duration: 3.0, ease: "linear" }}
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </div>

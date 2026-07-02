@@ -110,9 +110,14 @@ const Certificates = () => {
   const [currentIndex, setCurrentIndex] = useState(1); // Start at 1 for symmetrical layout
   const [hasEntered, setHasEntered] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
+  const [isViewerImageLoaded, setIsViewerImageLoaded] = useState(false);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
+
+  useEffect(() => {
+    setIsViewerImageLoaded(false);
+  }, [selectedCertIndex]);
 
   const touchStart = useRef(0);
   const touchDistanceRef = useRef(0);
@@ -146,13 +151,13 @@ const Certificates = () => {
   };
   const cardWidth = getCardWidth();
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     setCurrentIndex((prev) => prev - 1);
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     setCurrentIndex((prev) => prev + 1);
-  };
+  }, []);
 
   const handlePrevCert = useCallback(() => {
     setSelectedCertIndex((prev) => (prev - 1 + N) % N);
@@ -164,22 +169,24 @@ const Certificates = () => {
     setZoomScale(1);
   }, [N]);
 
-  const handleDotClick = (idx) => {
-    const currentActiveDot = ((currentIndex % N) + N) % N;
-    let diff = idx - currentActiveDot;
-    if (diff < -N / 2) diff += N;
-    if (diff > N / 2) diff -= N;
-    setCurrentIndex((prev) => prev + diff);
-  };
+  const handleDotClick = useCallback((idx) => {
+    setCurrentIndex((prev) => {
+      const currentActiveDot = ((prev % N) + N) % N;
+      let diff = idx - currentActiveDot;
+      if (diff < -N / 2) diff += N;
+      if (diff > N / 2) diff -= N;
+      return prev + diff;
+    });
+  }, [N]);
 
-  const handleDragEnd = (event, info) => {
+  const handleDragEnd = useCallback((event, info) => {
     const swipeThreshold = 50;
     if (info.offset.x < -swipeThreshold) {
       setCurrentIndex((prev) => prev + 1);
     } else if (info.offset.x > swipeThreshold) {
       setCurrentIndex((prev) => prev - 1);
     }
-  };
+  }, []);
 
   // Preload adjacent images
   useEffect(() => {
@@ -467,8 +474,8 @@ const Certificates = () => {
                     >
                       Open Original
                     </a>
-                    <button className="viewer-btn close-btn" onClick={handleCloseModal}>
-                      Close ✕
+                    <button className="viewer-btn close-btn" onClick={handleCloseModal} aria-label="Close">
+                      ✕
                     </button>
                   </div>
                 </header>
@@ -482,18 +489,27 @@ const Certificates = () => {
                   ref={viewerRef}
                 >
                   <div className="viewer-surface">
+                    {!isViewerImageLoaded && (
+                      <div className="viewer-image-loader">
+                        <div className="viewer-spinner" />
+                        <span className="viewer-loading-text">Loading Certificate...</span>
+                      </div>
+                    )}
                     <motion.img
                       key={selectedCertIndex}
                       initial={{ opacity: 0, scale: 0.98 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3 }}
+                      animate={isViewerImageLoaded ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
+                      transition={{ duration: 0.25 }}
                       src={withPublicUrl(certificatesData[selectedCertIndex].src)}
                       alt={certificatesData[selectedCertIndex].title}
                       className="viewer-img"
                       style={{
                         transform: `scale(${zoomScale})`,
-                        cursor: zoomScale > 1 ? "grab" : "zoom-in"
+                        cursor: zoomScale > 1 ? "grab" : "zoom-in",
+                        visibility: isViewerImageLoaded ? "visible" : "hidden",
+                        position: isViewerImageLoaded ? "relative" : "absolute"
                       }}
+                      onLoad={() => setIsViewerImageLoaded(true)}
                       onDoubleClick={handleDoubleClick}
                       drag={zoomScale > 1}
                       dragConstraints={{ left: -300, right: 300, top: -250, bottom: 250 }}

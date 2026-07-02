@@ -7,12 +7,21 @@
   color: #e5e7eb; // soft white
   line-height: 1.75;
 
+  .about-heading.fade-up {
+    transition-delay: 0.1s;
+  }
+  .about-text.fade-up {
+    transition-delay: 0.22s;
+  }
+  .resume-wrapper.fade-up {
+    transition-delay: 0.35s;
+  }
+  .signature-wrapper.fade-up {
+    transition-delay: 0.48s;
+  }
+
   @media (max-width: 480px) {
   }
-}
-
-.about-text{
-  text-align: left;
 }
 
 /* Main Heading */
@@ -52,10 +61,12 @@
 }
 
 /* Intro Paragraph */
-.yashwanth-about-text {
-  font-size: 1.1rem;
+.about-text {
+  text-align: left;
+  font-size: 1.15rem;
   margin-bottom: 35px;
   color: #d1d5db; // light gray
+  line-height: 1.8;
 
   @media (max-width: 480px) {
     font-size: 0.95rem;

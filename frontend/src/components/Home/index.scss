@@ -361,7 +361,7 @@
 @media (max-width: 768px) {
   .home-container {
     min-height: calc(100vh - 140px);
-    padding: 20px 0;
+    padding: 96px 0 20px; /* Push hero layout down below the floating header */
   }
 
   .hero-section {
@@ -406,7 +406,7 @@
 @media (max-width: 480px) {
   .home-container {
     min-height: calc(100vh - 120px);
-    padding: 10px 0;
+    padding: 84px 0 10px; /* Push hero layout down below the floating header */
   }
 
   .hero-section {

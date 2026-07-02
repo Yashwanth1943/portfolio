@@ -358,11 +358,22 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  
+
+  /* ── Mobile: full-screen native sheet ── */
   @media (max-width: 768px) {
-    width: 95vw;
-    height: 92vh;
-    border-radius: 24px;
+    width: 100vw;
+    height: 100dvh;           /* dynamic viewport height — excludes browser chrome */
+    max-width: 100vw;
+    max-height: 100dvh;
+    border-radius: 0;          /* full-bleed on mobile */
+    border: none;
+    box-shadow: none;
+    background: #06060c;
+
+    /* Safe area compensation */
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-sizing: border-box;
   }
 }
 
@@ -375,14 +386,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(11, 11, 18, 0.8);
+  background: rgba(11, 11, 18, 0.80);
   backdrop-filter: blur(8px);
   z-index: 10;
+  flex-shrink: 0;
 
+  /* ── Mobile header: compact + frosted ── */
   @media (max-width: 768px) {
-    padding: 0 16px;
     height: 56px;
     min-height: 56px;
+    padding: 0 14px 0 12px;
+    background: rgba(8, 6, 18, 0.92);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    gap: 8px;
   }
 }
 
@@ -392,6 +410,12 @@
   gap: 2px;
   text-align: left;
   max-width: 60%;
+  min-width: 0;      /* allows ellipsis to work in flex child */
+
+  @media (max-width: 768px) {
+    max-width: calc(100% - 130px);
+    gap: 1px;
+  }
 }
 
 .viewer-badge {
@@ -400,6 +424,12 @@
   text-transform: uppercase;
   letter-spacing: 1.2px;
   color: #a78bfa;
+
+  @media (max-width: 768px) {
+    font-size: 0.60rem;
+    letter-spacing: 0.9px;
+    color: rgba(167, 139, 250, 0.80);
+  }
 }
 
 .viewer-title {
@@ -411,7 +441,9 @@
   text-overflow: ellipsis;
 
   @media (max-width: 768px) {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: rgba(241, 245, 249, 0.90);
   }
 }
 
@@ -419,6 +451,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .viewer-btn {
@@ -442,26 +475,42 @@
   }
 
   &.close-btn {
-    background: rgba(239, 68, 68, 0.1);
-    border-color: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.18);
     color: #fca5a5;
 
     &:hover {
-      background: rgba(239, 68, 68, 0.2);
+      background: rgba(239, 68, 68, 0.20);
       color: #fff;
       border-color: rgba(239, 68, 68, 0.35);
     }
   }
 
-  @media (max-width: 480px) {
-    padding: 4px 8px;
+  /* Mobile: icon-only close, compact action buttons */
+  @media (max-width: 768px) {
+    padding: 6px 10px;
     font-size: 0.72rem;
+    border-radius: 10px;
+    gap: 4px;
+
+    /* Slightly stronger border on mobile for visibility */
+    border-color: rgba(255, 255, 255, 0.11);
+
+    &.close-btn {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0.80rem;
+    }
   }
 }
 
 /* Content Viewport */
 .viewer-viewport {
-  flex-grow: 1;
+  flex: 1;
+  min-height: 0;              /* Critical: lets flex child shrink below content size */
   position: relative;
   overflow: hidden;
   display: flex;
@@ -473,27 +522,38 @@
   touch-action: none;
 
   @media (max-width: 768px) {
-    padding: 16px;
+    padding: 12px;
+    background: #06060c;
   }
 }
 
 .viewer-surface {
   position: relative;
+  width: 100%;
+  height: 100%;               /* Fill the entire viewport so image constraints resolve */
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: 100%;
-  max-height: 100%;
 }
 
 .viewer-img {
-  max-width: 100%;
-  max-height: 70vh;
+  /* width/height: auto — let the browser calculate from the natural aspect ratio */
+  width: auto;
+  height: auto;
+  max-width: 100%;            /* Never overflow the viewport width */
+  max-height: 100%;           /* Never overflow the viewport height */
   object-fit: contain;
   border-radius: 8px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
   will-change: transform;
   transform-origin: center center;
+  display: block;
+
+  @media (max-width: 768px) {
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+    /* No explicit max-height calc needed — flex sizing handles it correctly */
+  }
 }
 
 /* Reset Zoom Button */
@@ -522,17 +582,30 @@
 
 /* Footer Controls */
 .viewer-footer {
-  height: 56px;
-  min-height: 56px;
+  height: 64px;
+  min-height: 64px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding: 0 24px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  background: rgba(11, 11, 18, 0.8);
+  background: rgba(11, 11, 18, 0.80);
   backdrop-filter: blur(8px);
   z-index: 10;
+  flex-shrink: 0;
+
+  /* Mobile: taller, easier tap targets */
+  @media (max-width: 768px) {
+    height: 64px;
+    min-height: 64px;
+    padding: 0 20px;
+    gap: 16px;
+    background: rgba(8, 6, 18, 0.92);
+    backdrop-filter: blur(24px) saturate(1.6);
+    -webkit-backdrop-filter: blur(24px) saturate(1.6);
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
+  }
 }
 
 .nav-btn {
@@ -551,6 +624,21 @@
     color: #fff;
     border-color: rgba(255, 255, 255, 0.18);
   }
+
+  /* Mobile: bigger pill buttons */
+  @media (max-width: 768px) {
+    padding: 9px 22px;
+    font-size: 0.84rem;
+    border-radius: 14px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.12);
+
+    &:active {
+      background: rgba(255, 255, 255, 0.14);
+      transform: scale(0.97);
+    }
+  }
 }
 
 .pagination {
@@ -558,6 +646,14 @@
   font-weight: 600;
   color: #94a3b8;
   letter-spacing: 0.5px;
+  min-width: 48px;
+  text-align: center;
+
+  @media (max-width: 768px) {
+    font-size: 0.88rem;
+    color: rgba(148, 163, 184, 0.85);
+    min-width: 52px;
+  }
 }
 
 /* Certificate subtitle */
@@ -576,5 +672,39 @@
     font-size: 12px;
     padding: 0 24px;
     margin-top: 24px;
+  }
+}
+
+/* Premium image loader inside viewport */
+.viewer-image-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: absolute;
+  z-index: 5;
+}
+
+.viewer-spinner {
+  width: 42px;
+  height: 42px;
+  border: 3.5px solid rgba(167, 139, 250, 0.08);
+  border-top-color: #a78bfa;
+  border-radius: 50%;
+  animation: modalSpinnerSpin 0.8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.4));
+}
+
+.viewer-loading-text {
+  font-size: 0.76rem;
+  font-weight: 500;
+  color: rgba(167, 139, 250, 0.75);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+@keyframes modalSpinnerSpin {
+  to {
+    transform: rotate(360deg);
   }
 }

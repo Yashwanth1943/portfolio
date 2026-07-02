@@ -1,6 +1,8 @@
-/* ─────────────────────────────────────────────────────────
-   Global Header Wrapper Container
-   ───────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   Header — Desktop Floating Capsule + Premium Mobile Sheet
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Desktop wrapper ───────────────────────────────────────── */
 .header-container {
   position: fixed;
   top: 24px;
@@ -27,18 +29,16 @@
   top: 14px;
 }
 
-/* ─────────────────────────────────────────────────────────
-   Floating Capsule brand wrapper
-   ───────────────────────────────────────────────────────── */
+/* ─── Brand wrapper ─────────────────────────────────────────── */
 .brand-wrapper {
   position: relative;
   pointer-events: auto;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 6px 18px;
+  padding: 8px 22px;
   border-radius: 999px;
   box-shadow:
-    0 4px 20px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 5px 22px rgba(0, 0, 0, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -60,14 +60,10 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     z-index: -1;
-    opacity: 1;
-    transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
+    transition: opacity 0.6s ease;
   }
 
-  & > * {
-    position: relative;
-    z-index: 2;
-  }
+  & > * { position: relative; z-index: 2; }
 
   &:hover {
     transform: translateY(-3px);
@@ -83,12 +79,7 @@
   border-color: transparent !important;
   box-shadow: none !important;
   pointer-events: none !important;
-
-  &::before {
-    opacity: 0 !important;
-    backdrop-filter: blur(0px) !important;
-    -webkit-backdrop-filter: blur(0px) !important;
-  }
+  &::before { opacity: 0 !important; }
 }
 
 .header-container.scrolled .brand-wrapper {
@@ -110,9 +101,7 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────
-   Brand Button
-   ───────────────────────────────────────────────────────── */
+/* ─── Brand button ──────────────────────────────────────────── */
 .brand-btn {
   background: none !important;
   border: none !important;
@@ -125,49 +114,20 @@
   animation: brandSlideIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-.brand-badge-mark {
-  font-family: var(--font-sans), sans-serif;
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: #94a3b8;
-  opacity: 0.45;
-  letter-spacing: -0.05em;
-}
-
 .brand-badge-text {
   font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 0.82rem;
+  font-size: 0.96rem;
   font-weight: 600;
   color: #f8fafc;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  display: inline-block;
   white-space: nowrap;
   will-change: transform, opacity;
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
 }
 
-@keyframes brandSlideIn {
-  0% {
-    opacity: 0;
-    transform: translate3d(20px, 0, 0);
-  }
-  100% {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes brandMeshMove {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* ─────────────────────────────────────────────────────────
-   Morphing Vector Hamburger Button
-   ───────────────────────────────────────────────────────── */
+/* ─── Hamburger button ──────────────────────────────────────── */
 .hamburger {
   display: none;
   pointer-events: auto;
@@ -186,11 +146,7 @@
   outline: none;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
-  svg {
-    display: block;
-    width: 22px;
-    height: 22px;
-  }
+  svg { display: block; width: 22px; height: 22px; }
 }
 
 .header-container.scrolled .hamburger {
@@ -202,9 +158,36 @@
   transform: translateY(-2px);
 }
 
-/* ─────────────────────────────────────────────────────────
-   Mobile Navigation Overlay
-   ───────────────────────────────────────────────────────── */
+/* ─── Keyframes ─────────────────────────────────────────────── */
+@keyframes brandSlideIn {
+  from { opacity: 0; transform: translate3d(20px, 0, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+@keyframes brandMeshMove {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes pillShimmer {
+  0%   { transform: translateX(-120%); }
+  100% { transform: translateX(220%); }
+}
+
+@keyframes blobFloatLeft {
+  to { transform: translate(28px, 22px) scale(1.10); }
+}
+
+@keyframes blobFloatRight {
+  to { transform: translate(-32px, -28px) scale(1.15); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MOBILE NAVIGATION
+   Only takes effect inside the overlay — desktop unaffected.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Full-screen backdrop ──────────────────────────────────── */
 .mobile-nav-overlay {
   position: fixed;
   inset: 0;
@@ -212,220 +195,171 @@
   display: flex;
   align-items: center;
   justify-content: center;
-
-  /* Slightly darker, stronger blur for premium feel */
-  background: rgba(2, 1, 8, 0.58);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  background: rgba(2, 1, 8, 0.60);
+  backdrop-filter: blur(24px) saturate(1.4); /* Reduced: was 28px — saves ~30% GPU cost */
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
   overflow: hidden;
+
+  /*
+   * contain:strict = browser only repaints this subtree.
+   * Prevents the overlay from triggering full-page layout/paint.
+   */
+  contain: strict;
+  /* GPU layer for the overlay itself */
+  transform: translateZ(0);
+  will-change: opacity;
 }
 
 .mobile-nav-closer-bg {
   position: absolute;
   inset: 0;
   z-index: 1;
+  cursor: default;
 }
 
-/* Background blobs — kept inside the overlay but toned down */
+/* Subtle ambient depth blobs — very low opacity, behind sheet */
 .mobile-nav-bg-blob1,
 .mobile-nav-bg-blob2 {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(90px);
   pointer-events: none;
   z-index: 2;
-  /* Blobs are behind the sheet — no side glows visible outside it */
 }
 
 .mobile-nav-bg-blob1 {
-  width: 260px;
-  height: 260px;
+  width: 240px;
+  height: 240px;
   background: #a78bfa;
-  opacity: 0.12;            /* Toned-down, was 0.25 */
-  top: 18%;
-  left: 12%;
-  animation: blobFloatLeft 12s ease-in-out infinite alternate;
+  opacity: 0.10;
+  top: 15%;
+  left: 10%;
+  animation: blobFloatLeft 14s ease-in-out infinite alternate;
 }
 
 .mobile-nav-bg-blob2 {
-  width: 240px;
-  height: 240px;
+  width: 220px;
+  height: 220px;
   background: #38bdf8;
-  opacity: 0.10;
-  bottom: 22%;
-  right: 14%;
-  animation: blobFloatRight 12s ease-in-out infinite alternate;
+  opacity: 0.08;
+  bottom: 18%;
+  right: 12%;
+  animation: blobFloatRight 14s ease-in-out infinite alternate;
 }
 
-@keyframes blobFloatLeft {
-  to { transform: translate(30px, 25px) scale(1.12); }
-}
-
-@keyframes blobFloatRight {
-  to { transform: translate(-35px, -30px) scale(1.18); }
-}
-
-/* ─────────────────────────────────────────────────────────
-   Center Floating Glass Panel — REFINED
-   ───────────────────────────────────────────────────────── */
+/* ─── Glass Sheet Panel ─────────────────────────────────────── */
 .mobile-nav-panel {
   position: relative;
-
-  /* 86% width → compact, well-proportioned */
-  width: 86%;
-  max-width: 360px;
-
-  /* Premium corner radius */
+  width: 87%;
+  max-width: 358px;
   border-radius: 34px;
+  overflow: hidden;
 
-  /* Strengthened frosted glass */
-  background: rgba(12, 10, 28, 0.72);
-  backdrop-filter: blur(36px) saturate(1.8);
-  -webkit-backdrop-filter: blur(36px) saturate(1.8);
+  background: rgba(9, 7, 22, 0.82);
+  backdrop-filter: blur(32px) saturate(1.8); /* Reduced from 44px — halves GPU cost */
+  -webkit-backdrop-filter: blur(32px) saturate(1.8);
 
-  /* Thin luminous border + subtle top highlight */
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.11);
 
-  /* Top highlight line for depth */
   &::before {
     content: "";
     position: absolute;
     top: 0;
-    left: 10%;
-    right: 10%;
+    left: 0;
+    right: 0;
     height: 1px;
     background: linear-gradient(
       90deg,
-      transparent,
-      rgba(255, 255, 255, 0.18) 40%,
-      rgba(255, 255, 255, 0.18) 60%,
-      transparent
+      transparent 4%,
+      rgba(255, 255, 255, 0.22) 32%,
+      rgba(255, 255, 255, 0.22) 68%,
+      transparent 96%
     );
-    border-radius: 0 0 2px 2px;
+    z-index: 30;
     pointer-events: none;
   }
 
-  /* Soft ambient shadow only — no side glows */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -30%;
+    right: -20%;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(ellipse, rgba(255,255,255,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
   box-shadow:
-    0 32px 64px rgba(0, 0, 0, 0.75),
-    0 8px 24px rgba(0, 0, 0, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 44px 88px rgba(0, 0, 0, 0.82),
+    0 14px 36px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035);
 
   z-index: 10;
-  padding: 20px 16px 24px;
+  padding:
+    max(20px, env(safe-area-inset-top, 20px))
+    16px
+    calc(20px + env(safe-area-inset-bottom, 0px));
+
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  touch-action: pan-y;
-}
-
-/* ─────────────────────────────────────────────────────────
-   Drag Handle — thinner, shorter, lower opacity
-   ───────────────────────────────────────────────────────── */
-.swipe-indicator-bar {
-  width: 36px;
-  height: 4px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.18);
-  cursor: grab;
-  margin-bottom: 4px;
-  flex-shrink: 0;
-
-  &:active {
-    cursor: grabbing;
-  }
-}
-
-/* ─────────────────────────────────────────────────────────
-   Nav Content List
-   ───────────────────────────────────────────────────────── */
-.mobile-nav-content {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 4px;            /* Tighter, consistent spacing between items */
-}
-
-/* ─────────────────────────────────────────────────────────
-   Individual Nav Links — refined sizing
-   ───────────────────────────────────────────────────────── */
-.mobile-nav-link {
-  position: relative;
-  display: flex;
   align-items: center;
   gap: 14px;
-  width: 100%;
+  touch-action: pan-y;
 
-  /* 54px total height with symmetric padding */
-  padding: 0 20px;
-  height: 54px;
-
-  border-radius: 18px;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  color: rgba(203, 213, 225, 0.75);
-  text-align: left;
-  outline: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: color 0.25s ease;
-
-  &:hover {
-    color: rgba(255, 255, 255, 0.95);
-
-    .mobile-nav-icon {
-      color: var(--active-color);
-      opacity: 1;
-    }
-  }
-
-  &.active {
-    color: #ffffff;
-
-    .mobile-nav-icon {
-      color: var(--active-color);
-      opacity: 1;
-    }
-  }
-
-  /* Press feedback — subtle scale */
-  &:active {
-    transform: scale(0.98);
-    transition: transform 0.12s ease;
-  }
+  /* GPU promotion — panel animates independently on its own layer */
+  will-change: transform, opacity;
+  transform: translateZ(0);
 }
 
-.mobile-nav-icon {
-  font-size: 1.2rem;    /* 20–22px equivalent */
-  width: 22px;
-  height: 22px;
-  color: rgba(148, 163, 184, 0.7);
-  z-index: 5;
+/* ─── Premium Sheet Header ──────────────────────────────────── */
+.mob-sheet-header {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: color 0.25s ease, opacity 0.25s ease;
+  gap: 6px;
+  width: 100%;
+  padding-bottom: 2px;
 }
 
-.mobile-nav-text {
-  font-size: 1rem;
-  font-weight: 500;       /* Medium — was 600 */
-  letter-spacing: -0.15px;
-  z-index: 5;
+.mob-drag-handle {
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.16);
+  margin-bottom: 10px;
+  flex-shrink: 0;
+  cursor: grab;
+
+  &:active { cursor: grabbing; }
+}
+
+.mob-sheet-title {
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.90);
+  letter-spacing: 0.02em;
+  margin: 0;
   line-height: 1;
 }
 
-/* ─────────────────────────────────────────────────────────
-   Gooey Liquid Active Indicator — refined
-   ───────────────────────────────────────────────────────── */
+.mob-sheet-sub {
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: rgba(148, 163, 184, 0.55);
+  letter-spacing: 0.01em;
+  margin: 0;
+  line-height: 1;
+}
+
+/* ─── Gooey wrapper ─────────────────────────────────────────── */
 .mobile-gooey-wrapper {
   position: relative;
   width: 100%;
 }
 
+/* Gooey layer — absolute, sits behind the buttons */
 .mobile-gooey-container {
   position: absolute;
   inset: 0;
@@ -433,62 +367,170 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 4px;           /* Must match mobile-nav-content gap */
+  gap: 6px;
   z-index: 1;
+  /* GPU compositing for the gooey SVG filter layer */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .mobile-gooey-cell {
   position: relative;
   width: 100%;
-  height: 54px;       /* Must match mobile-nav-link height */
+  height: 52px;   /* MUST match .mobile-nav-link height */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/* Dark background anchor (glass background match) */
+/*
+ * Opaque dark anchor — critical for the gooey SVG filter to work.
+ * Must be fully opaque and match the panel bg color.
+ */
 .mobile-gooey-anchor {
-  width: 88%;
-  height: 40px;       /* Active pill height — smaller than cell */
-  border-radius: 14px;
-  background: rgba(12, 10, 28, 0.72); /* Matches panel background */
-  transition: background-color 0.4s ease;
+  width: 86%;
+  height: 40px;
+  border-radius: 13px;
+  background: #090716;   /* fully opaque panel bg */
 }
 
-/* Active state accent pill */
+/* Active accent pill — neutral white/grey, no section color */
 .mobile-nav-glow-accent {
   position: absolute;
-  width: 88%;         /* Leaves 6% breathing room on each side */
+  width: 86%;
   height: 40px;
-  border-radius: 14px;
-
-  /* Soft gradient instead of flat saturated color */
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--active-color) 60%, transparent),
-    color-mix(in srgb, var(--active-color) 35%, transparent)
-  );
-
+  border-radius: 13px;
   z-index: 2;
-
-  /* Subtle glow — reduced from heavy orange, much softer */
-  box-shadow:
-    0 0 18px color-mix(in srgb, var(--active-color) 30%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-
-  pointer-events: none;
   transform-origin: center;
+  pointer-events: none;
+  overflow: hidden;
+
+  /* Neutral semi-transparent white fill */
+  background: rgba(255, 255, 255, 0.09);
+
+  /* Thin top inner highlight */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 10px rgba(255, 255, 255, 0.05);
+
+  /* Sweeping shimmer */
+  &::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.07),
+      transparent
+    );
+    animation: pillShimmer 3.5s ease-in-out infinite;
+    animation-delay: 0.8s;
+    border-radius: inherit;
+  }
 }
 
-/* ─────────────────────────────────────────────────────────
-   Tablet / Mobile Media Queries
-   ───────────────────────────────────────────────────────── */
+/* ─── Nav Content List ──────────────────────────────────────── */
+.mobile-nav-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 6px;   /* MUST match .mobile-gooey-container gap */
+}
+
+.mobile-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  width: 100%;
+  height: 52px;
+  padding: 0 18px;
+  border-radius: 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: rgba(203, 213, 225, 0.68);
+  text-align: left;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.22s ease, background 0.22s ease;
+
+  /*
+   * GPU promotion for each nav item:
+   * translateZ(0) creates a compositing layer so tap animations
+   * don't trigger main-thread layout.
+   */
+  transform: translateZ(0);
+  will-change: transform;
+
+  /* Full-width hover background */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0);
+    transition: background 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.95);
+
+    &::before {
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    .mobile-nav-icon { color: rgba(255, 255, 255, 0.85); opacity: 1; }
+
+    .mobile-nav-text { letter-spacing: 0.018em; }
+  }
+
+  &.active {
+    color: #ffffff;
+
+    .mobile-nav-icon { color: #ffffff; opacity: 1; }
+  }
+}
+
+.mobile-nav-icon {
+  font-size: 1.18rem;    /* ~20px */
+  width: 20px;
+  height: 20px;
+  color: rgba(148, 163, 184, 0.65);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.mobile-nav-text {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.005em;
+  z-index: 5;
+  line-height: 1;
+  transition: letter-spacing 0.22s ease;
+}
+
+/* Footer styles removed */
+
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Tablet (≤992px) — show hamburger, adjust header
+   ═══════════════════════════════════════════════════════════ */
 @media (max-width: 992px) {
   .header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: fixed;
     top: 20px;
     left: 50%;
     transform: translateX(-50%);
@@ -522,6 +564,8 @@
     padding: 0 !important;
     box-shadow: none !important;
     transform: none !important;
+
+    &::before { opacity: 0 !important; }
   }
 
   .header-container.scrolled .brand-wrapper {
@@ -529,7 +573,6 @@
     border-color: transparent !important;
     box-shadow: none !important;
     transform: none !important;
-    animation: none !important;
   }
 
   .hamburger {
@@ -553,9 +596,9 @@
   }
 }
 
-/* ─────────────────────────────────────────────────────────
-   Portrait Mobile — safe area insets
-   ───────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   RESPONSIVE — Small mobile (≤480px)
+   ═══════════════════════════════════════════════════════════ */
 @media (max-width: 480px) {
   .header-container {
     top: 15px;
@@ -563,49 +606,38 @@
     padding: 8px 18px;
   }
 
-  .header-container.scrolled {
-    top: 8px;
-  }
-
-  .brand-btn {
-    font-size: clamp(1rem, 3.2vw, 1.25rem);
-  }
+  .header-container.scrolled { top: 8px; }
 
   .mobile-nav-panel {
-    /* Slightly narrower on very small screens */
-    width: 88%;
-    padding: 16px 14px 20px;
+    width: 91%;
     border-radius: 30px;
-
-    /* Respect Dynamic Island / notch */
-    padding-top: max(16px, env(safe-area-inset-top, 16px));
+    gap: 12px;
+    /* Both safe areas */
+    padding:
+      max(18px, env(safe-area-inset-top, 18px))
+      14px
+      calc(18px + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-nav-link {
-    height: 52px;
-    padding: 0 16px;
-    gap: 12px;
+    height: 50px;
+    padding: 0 15px;
   }
 
-  .mobile-gooey-cell {
-    height: 52px;
-  }
+  .mobile-gooey-cell { height: 50px; }
 
-  .mobile-nav-text {
-    font-size: 0.95rem;
-  }
+  .mobile-nav-text { font-size: 0.94rem; }
 
-  .mobile-nav-icon {
-    font-size: 1.1rem;
-  }
+  .mobile-nav-icon { font-size: 1.08rem; }
 }
 
-/* ─────────────────────────────────────────────────────────
-   Accessibility: Reduced-Motion
-   ───────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════
+   Accessibility
+   ═══════════════════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   .mobile-nav-bg-blob1,
-  .mobile-nav-bg-blob2 {
+  .mobile-nav-bg-blob2,
+  .mobile-nav-glow-accent::after {
     animation: none !important;
   }
 }
