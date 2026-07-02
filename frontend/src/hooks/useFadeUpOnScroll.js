@@ -5,8 +5,10 @@ import { useEffect } from "react";
  * enter the viewport. Uses a MutationObserver so it catches sections
  * that mount *after* Suspense resolves (lazy-loaded chunks).
  */
-const useFadeUpOnScroll = (routeKey) => {
+const useFadeUpOnScroll = (routeKey, enabled = true) => {
   useEffect(() => {
+    if (!enabled) return undefined;
+
     const intersectionObserver = new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((entry) => {
@@ -56,7 +58,7 @@ const useFadeUpOnScroll = (routeKey) => {
       intersectionObserver.disconnect();
       mutationObserver.disconnect();
     };
-  }, [routeKey]);
+  }, [routeKey, enabled]);
 };
 
 export default useFadeUpOnScroll;

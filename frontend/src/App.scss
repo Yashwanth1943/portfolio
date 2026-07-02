@@ -65,7 +65,7 @@ section[id] {
   max-width: 1120px;
   margin: 0 auto;
   /* Desktop: extra left padding for sidebar (60px sidebar + 20px gap) */
-  padding: clamp(40px, 5vw, 64px) clamp(16px, 4vw, 32px);
+  padding: clamp(40px, 5vw, 64px) clamp(16px, 4vw, 32px) clamp(40px, 5vw, 64px) clamp(80px, 8vw, 100px);
 
   @media (max-width: 992px) {
     /* Tablet: sidebar hidden, balanced padding */

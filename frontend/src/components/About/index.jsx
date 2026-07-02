@@ -25,7 +25,16 @@ const About = () => {
         </button>
       </div>
       <div className="signature-wrapper">
-        <p className="signature">Yashwanth K..</p>
+        <span className="signature-prefix">—</span>
+        <svg viewBox="0 0 350 100" className="about-signature-svg">
+          <text
+            x="10"
+            y="65"
+            className="about-signature-text"
+          >
+            Yashwanth K..
+          </text>
+        </svg>
       </div>
     </section>
   );

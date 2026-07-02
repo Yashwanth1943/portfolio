@@ -1,0 +1,56 @@
+.morph-text-container {
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 48rem;
+  text-align: center;
+  font-family: "Plus Jakarta Sans", "Segoe UI", sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  
+  // Magic liquid morphing filter
+  filter: url(#threshold) blur(0.6px);
+  margin-bottom: 40px;
+  
+  // Heights and sizes
+  height: 50px;
+  font-size: 1.8rem;
+
+  @media (min-width: 640px) {
+    height: 60px;
+    font-size: 2.2rem;
+  }
+
+  @media (min-width: 768px) {
+    height: 70px;
+    font-size: 2.6rem;
+  }
+}
+
+.morph-text-item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: auto;
+  display: inline-block;
+  width: 100%;
+  
+  // Custom text gradient matching the auroras/loader
+  background: linear-gradient(90deg, #a78bfa, #38bdf8, #c084fc);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  user-select: none;
+}
+
+.morph-svg-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}

@@ -2,6 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
+import dns from "dns";
+import fs from "fs/promises";
+import path from "path";
+
+dns.setDefaultResultOrder("ipv4first");
 
 dotenv.config();
 
@@ -21,7 +26,36 @@ const allowedOrigins = new Set([
 const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.has(origin)) return true;
+  if (/^http:\/\/localhost:\d+$/.test(origin)) return true;
   return /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin);
+};
+
+const saveContactFallback = async (data) => {
+  try {
+    const filePath = path.join(process.cwd(), "submissions.json");
+    let currentData = [];
+    try {
+      const fileContent = await fs.readFile(filePath, "utf-8");
+      currentData = JSON.parse(fileContent);
+    } catch (e) {
+      // File doesn't exist or is invalid, start with empty array
+    }
+    const newEntry = {
+      ...data,
+      Timestamp: new Date().toLocaleString("en-IN", {
+        timeZone: "Asia/Kolkata",
+        dateStyle: "medium",
+        timeStyle: "medium",
+      }),
+      fallback: true
+    };
+    currentData.push(newEntry);
+    await fs.writeFile(filePath, JSON.stringify(currentData, null, 2), "utf-8");
+    return newEntry;
+  } catch (err) {
+    console.error("Fallback save failed:", err);
+    throw err;
+  }
 };
 
 app.use(
@@ -143,24 +177,16 @@ app.get("/api/health", (req, res) => {
   const dbState = mongoose.connection.readyState;
   const dbReady = isDbReady();
 
-  return res.status(dbReady ? 200 : 503).json({
-    status: dbReady ? "ready" : dbState === 2 ? "connecting" : "waking_up",
+  return res.status(200).json({
+    status: "ready",
     dbReady,
     dbState,
+    fallbackEnabled: true,
   });
 });
 
 app.post("/api/contact", async (req, res) => {
   const start = Date.now();
-
-  if (!isDbReady()) {
-    void connectToDb();
-    res.set("Retry-After", "5");
-
-    return res.status(503).json({
-      error: "Service is waking up. Please try again in a few seconds.",
-    });
-  }
 
   const name = req.body?.name?.trim();
   const email = req.body?.email?.trim();
@@ -170,30 +196,38 @@ app.post("/api/contact", async (req, res) => {
     return res.status(400).json({ error: "Name and email are required." });
   }
 
+  if (isDbReady()) {
+    try {
+      const saved = await withTimeout(
+        Contact.create({ name, email, message }),
+        CONTACT_CREATE_TIMEOUT_MS,
+        "Contact save"
+      );
+
+      const duration = Date.now() - start;
+      console.log(`POST /api/contact completed via MongoDB in ${duration}ms`);
+
+      return res.status(201).json({
+        message: "Form submitted successfully!",
+        saved,
+      });
+    } catch (error) {
+      console.error("MongoDB save failed, attempting fallback...", error);
+    }
+  } else {
+    void connectToDb();
+  }
+
   try {
-    const saved = await withTimeout(
-      Contact.create({ name, email, message }),
-      CONTACT_CREATE_TIMEOUT_MS,
-      "Contact save"
-    );
-
+    const saved = await saveContactFallback({ name, email, message });
     const duration = Date.now() - start;
-    console.log(`POST /api/contact completed in ${duration}ms`);
-
+    console.log(`POST /api/contact completed via JSON fallback in ${duration}ms`);
     return res.status(201).json({
       message: "Form submitted successfully!",
       saved,
     });
-  } catch (error) {
-    const duration = Date.now() - start;
-    console.error(`POST /api/contact failed in ${duration}ms`, error);
-
-    if (error?.message?.includes("timed out")) {
-      return res.status(503).json({
-        error: "Server is taking longer than expected. Please try again shortly.",
-      });
-    }
-
+  } catch (fallbackError) {
+    console.error("All save attempts failed", fallbackError);
     return res.status(500).json({ error: "Failed to submit form" });
   }
 });

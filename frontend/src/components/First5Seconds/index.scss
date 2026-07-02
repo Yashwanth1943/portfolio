@@ -1,127 +1,204 @@
-.container {
+.splash-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  padding: clamp(18px, 4vw, 28px);
+  background: #060608;
+  color: #f8fafc;
+  overflow: hidden;
+}
+
+/* Subtle Animated Ambient Mesh Gradient Backdrop */
+.splash-ambient-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 25%, rgba(17, 24, 39, 0.6) 0%, transparent 55%),
+    radial-gradient(circle at 75% 70%, rgba(15, 23, 42, 0.45) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, #0b0d12 0%, #060608 100%);
+  background-size: 200% 200%;
+  animation: splashAmbientMove 12s ease-in-out infinite alternate;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes splashAmbientMove {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+/* Sequence 1 Rings */
+.splash-rings-container {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.splash-center-dot {
+  width: 6px;
+  height: 6px;
+  background-color: #f8fafc;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
+  position: absolute;
+}
+
+.splash-ring {
+  width: 80px;
+  height: 80px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  position: absolute;
+}
+
+/* Content Layout */
+.splash-content-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  place-items: center;
   text-align: center;
-  color: #e2e8f0;
-  
-  // Premium dark cosmic backdrop matching App.scss
-  background: 
-    radial-gradient(circle at 20% 30%, rgba(99, 102, 241, 0.18) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(236, 72, 153, 0.12) 0%, transparent 50%),
-    radial-gradient(at center, #14083a, #060412, #020008);
-  background-size: 100% 100%;
+  max-width: 90%;
+  z-index: 10;
+  width: 100%;
+}
 
-  .item {
-    margin: clamp(4px, 1vw, 10px);
-    line-height: 1.18;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    transform-style: preserve-3d;
+.splash-brand-container {
+  grid-area: 1 / 1 / 2 / 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
 
-    .char {
-      display: inline-block;
-      will-change: transform, opacity;
-    }
-  }
+/* Hello Title */
+.splash-hello {
+  grid-area: 1 / 1 / 2 / 2;
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(2.6rem, 6vw, 4.6rem);
+  font-weight: 500;
+  color: #f8fafc;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
 
-  .first {
-    font-size: clamp(2.25rem, 6.8vw, 4.5rem);
-    color: #ffffff;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.35);
-  }
+.splash-name-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
 
-  .second {
-    font-size: clamp(1.8rem, 5.6vw, 3.55rem);
-    color: #dbeafe;
-  }
+.splash-im-label {
+  font-family: var(--font-sans), sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
 
-  .third {
-    font-size: clamp(1rem, 2.3vw, 1.42rem);
-    color: #93c5fd;
-    letter-spacing: 0.01em;
-    max-width: 28ch;
-  }
+.splash-brand-name {
+  display: inline-block;
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: #f8fafc;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-  .loader-container {
-    width: 200px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 2px;
-    margin-top: 35px;
-    overflow: hidden;
-    position: relative;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
+/* Name Block */
+.splash-name-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
 
-  .loader-bar {
-    height: 100%;
-    width: 0%;
-    background: linear-gradient(90deg, #38bdf8, #a78bfa, #ec4899);
-    box-shadow: 0 0 12px rgba(167, 139, 250, 0.8);
-    border-radius: 2px;
-  }
+.splash-im-text {
+  font-family: var(--font-sans), sans-serif;
+  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-weight: 400;
+  color: #94a3b8;
+  letter-spacing: 0.02em;
+}
 
-  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
-    .second .char {
-      background: linear-gradient(135deg, #a78bfa 0%, #c084fc 48%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(167, 139, 250, 0.25);
-    }
+.splash-name-row {
+  display: inline-flex;
+  align-items: center;
+}
 
-    .third .char {
-      background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(56, 189, 248, 0.15);
-    }
-  }
+.splash-first-name-wrap {
+  display: inline-flex;
+}
 
-  @media (max-width: 768px) {
-    padding: 20px;
+.splash-char {
+  font-family: "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  font-weight: 600;
+  color: #f8fafc;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  display: inline-block;
+  line-height: 1.1;
+}
 
-    .item {
-      margin: 6px;
-    }
+.splash-char-space {
+  font-size: clamp(2.4rem, 6vw, 4.4rem);
+  letter-spacing: 0.11em;
+  display: inline-block;
+}
 
-    .first {
-      font-size: clamp(2rem, 9vw, 3.45rem);
-    }
+.last-name-char {
+  color: #cbd5e1;
+  opacity: 0.8;
+}
 
-    .second {
-      font-size: clamp(1.55rem, 7.3vw, 2.8rem);
-    }
+/* Subtitle & Progress */
+.splash-subtitle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
 
-    .third {
-      font-size: clamp(0.96rem, 3.6vw, 1.22rem);
-    }
-  }
+.splash-tagline {
+  font-family: var(--font-sans), sans-serif;
+  font-size: clamp(0.9rem, 1.8vw, 1.15rem);
+  font-weight: 500;
+  color: #94a3b8;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+}
 
-  @media (max-width: 480px) {
-    padding: 16px;
+.splash-progress-wrapper {
+  width: 140px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 1px;
+  overflow: hidden;
+  margin-top: 4px;
+}
 
-    .item {
-      margin: 4px;
-    }
-
-    .first {
-      font-size: clamp(1.85rem, 10.8vw, 2.75rem);
-    }
-
-    .second {
-      font-size: clamp(1.35rem, 8.2vw, 2.15rem);
-    }
-
-    .third {
-      font-size: clamp(0.88rem, 4.3vw, 1.04rem);
-      line-height: 1.42;
-    }
-  }
+.splash-progress-line {
+  height: 100%;
+  background: linear-gradient(90deg, #a78bfa 0%, #38bdf8 100%);
+  box-shadow: 0 0 8px rgba(167, 139, 250, 0.5);
 }

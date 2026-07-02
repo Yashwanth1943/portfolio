@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Mr+De+Haviland&display=swap");
+
+.writing-loader-container {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.writing-loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 600px;
+}
+
+.writing-svg {
+  width: min(95vw, 650px);
+  height: auto;
+  overflow: visible;
+}
+
+.writing-text {
+  font-family: "Mr De Haviland", cursive;
+  font-size: 150px; /* Grand calligraphic size suited for "Yashwant" */
+  font-weight: 400;
+  letter-spacing: 1px;
+  fill: rgba(167, 139, 250, 0);
+  stroke: url(#writing-gradient);
+  stroke-width: 1.8; /* Thin elegant calligraphic pen signature outline */
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: writeAndFill 3s cubic-bezier(0.45, 0, 0.25, 1) infinite alternate;
+  filter: drop-shadow(0 0 12px rgba(167, 139, 250, 0.5));
+}
+
+@keyframes writeAndFill {
+  0% {
+    stroke-dashoffset: 1200;
+    fill: rgba(167, 139, 250, 0);
+  }
+  65% {
+    stroke-dashoffset: 0;
+    fill: rgba(167, 139, 250, 0);
+  }
+  85%, 100% {
+    stroke-dashoffset: 0;
+    fill: rgba(255, 255, 255, 0.95);
+  }
+}

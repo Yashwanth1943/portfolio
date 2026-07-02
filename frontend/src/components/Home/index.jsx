@@ -20,19 +20,16 @@ const HomePage = () => {
     }
 
     const ctx = gsap.context(() => {
-      gsap.from(heroRef.current, {
-        opacity: 0,
-        duration: 1,
-        ease: 'power3.out',
-      });
+      const tl = gsap.timeline({ delay: 0.15 });
 
-      gsap.from(heroPhotoRef.current, {
-        opacity: 0,
-        scale: 0.92,
-        duration: 1,
-        delay: 0.2,
-        ease: 'power3.out',
-      });
+      gsap.set(heroRef.current, { opacity: 1 });
+
+      tl.from(".hero-kicker", { opacity: 0, y: 15, duration: 0.6, ease: "power3.out" })
+        .from(".hero-heading", { opacity: 0, y: 20, duration: 0.8, ease: "power3.out" }, "-=0.45")
+        .from(".hero-subtitle", { opacity: 0, y: 15, duration: 0.6, ease: "power3.out" }, "-=0.55")
+        .from(".hero-highlights li", { opacity: 0, y: 10, stagger: 0.08, duration: 0.5, ease: "power2.out" }, "-=0.35")
+        .from(".hero-buttons .btn", { opacity: 0, y: 12, stagger: 0.1, duration: 0.5, ease: "power2.out" }, "-=0.35")
+        .from(heroPhotoRef.current, { opacity: 0, scale: 0.93, y: 15, duration: 1.0, ease: "back.out(1.2)" }, "-=0.6");
     });
 
     return () => ctx.revert();
@@ -81,7 +78,7 @@ const HomePage = () => {
               className="hero-photo-container"
             >
               <ProfileCard
-                name="Yashwanth Kosuri"
+                name="Yashwanth"
                 title="Full Stack Developer"
                 handle="yashwanth_kosuri"
                 status="Available for Work"
@@ -94,7 +91,7 @@ const HomePage = () => {
                   document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
                 }}
                 behindGlowEnabled={false}
-                innerGradient="linear-gradient(145deg, rgba(30, 20, 50, 0.8) 0%, rgba(56, 189, 248, 0.2) 100%)"
+                innerGradient="linear-gradient(180deg, #0d0d12 0%, #0B0B0F 100%)"
               />
             </div>
           </div>

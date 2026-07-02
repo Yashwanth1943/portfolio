@@ -1,9 +1,16 @@
-import React, { useRef, useEffect, useState, useCallback, memo } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { 
+  FaReact, 
+  FaWallet, 
+  FaClipboardList, 
+  FaHeartbeat, 
+  FaBriefcase, 
+  FaShoppingCart, 
+  FaChartBar, 
+  FaUtensils 
+} from "react-icons/fa";
 import "./index.scss";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const projects = [
   {
@@ -13,8 +20,11 @@ const projects = [
     tech: ["React", "GSAP", "SCSS"],
     demo: "https://portofolio-neon-six.vercel.app",
     code: "https://github.com/Yashwanth1943/Portofolio.git",
-    gradient: "linear-gradient(135deg, #6d28d9 0%, #a78bfa 40%, #38bdf8 100%)",
-    icon: "⚡",
+    themeClass: "theme-purple-blue",
+    hoverColors: ["rgba(167, 139, 250, 0.4)", "rgba(56, 189, 248, 0.2)"],
+    icon: FaReact,
+    iconColor: "#61dafb",
+    imageHeight: "220px",
   },
   {
     id: "expense-tracker",
@@ -23,8 +33,11 @@ const projects = [
     tech: ["React", "LocalStorage", "CSS"],
     demo: "https://bellcorp-expense-tracker-frontend.vercel.app/",
     code: "https://github.com/Yashwanth1943/bellcorp-expense-tracker-frontend.git",
-    gradient: "linear-gradient(135deg, #0891b2 0%, #06b6d4 45%, #67e8f9 100%)",
-    icon: "💰",
+    themeClass: "theme-emerald-cyan",
+    hoverColors: ["rgba(52, 211, 153, 0.4)", "rgba(6, 182, 212, 0.2)"],
+    icon: FaWallet,
+    iconColor: "#34d399",
+    imageHeight: "280px",
   },
   {
     id: "todo-app-codex",
@@ -33,8 +46,11 @@ const projects = [
     tech: ["Codex", "React", "LocalStorage", "CSS"],
     demo: "https://todo-three-cyan-30.vercel.app/",
     code: "https://github.com/Yashwanth1943/todo.git",
-    gradient: "linear-gradient(135deg, #059669 0%, #10b981 45%, #6ee7b7 100%)",
-    icon: "✅",
+    themeClass: "theme-orange-red",
+    hoverColors: ["rgba(249, 115, 22, 0.4)", "rgba(244, 63, 94, 0.2)"],
+    icon: FaClipboardList,
+    iconColor: "#f43f5e",
+    imageHeight: "200px",
   },
   {
     id: "nirog-gyan",
@@ -43,8 +59,11 @@ const projects = [
     tech: ["React", "REST API"],
     demo: "https://nirog-gyan-alpha.vercel.app/",
     code: "https://github.com/Yashwanth1943/nirogGyan.git",
-    gradient: "linear-gradient(135deg, #db2777 0%, #ec4899 45%, #f9a8d4 100%)",
-    icon: "🏥",
+    themeClass: "theme-pink-violet",
+    hoverColors: ["rgba(236, 72, 153, 0.4)", "rgba(167, 139, 250, 0.2)"],
+    icon: FaHeartbeat,
+    iconColor: "#ec4899",
+    imageHeight: "260px",
   },
   {
     id: "jobby-app",
@@ -53,8 +72,11 @@ const projects = [
     tech: ["React", "React Router", "REST API", "CSS"],
     demo: "https://jobbyapp1234.ccbp.tech/",
     code: "https://github.com/Yashwanth1943/jobby-app.git",
-    gradient: "linear-gradient(135deg, #d97706 0%, #f59e0b 45%, #fcd34d 100%)",
-    icon: "💼",
+    themeClass: "theme-teal-blue",
+    hoverColors: ["rgba(20, 184, 166, 0.4)", "rgba(59, 130, 246, 0.2)"],
+    icon: FaBriefcase,
+    iconColor: "#22d3ee",
+    imageHeight: "240px",
   },
   {
     id: "nxt-trendz",
@@ -63,8 +85,11 @@ const projects = [
     tech: ["React", "React Router", "JWT Auth", "CSS"],
     demo: "https://yashnexttrendz.ccbp.tech/login",
     code: "https://github.com/Yashwanth1943/Nxt-Trendz.git",
-    gradient: "linear-gradient(135deg, #7c3aed 0%, #8b5cf6 45%, #c4b5fd 100%)",
-    icon: "🛒",
+    themeClass: "theme-gold-orange",
+    hoverColors: ["rgba(245, 158, 11, 0.4)", "rgba(234, 88, 12, 0.2)"],
+    icon: FaShoppingCart,
+    iconColor: "#fbbf24",
+    imageHeight: "275px",
   },
   {
     id: "covid-dashboard",
@@ -73,8 +98,11 @@ const projects = [
     tech: ["React", "REST API", "CSS"],
     demo: "https://dashbordcovid.ccbp.tech/",
     code: "https://github.com/Yashwanth1943/covid-dashboard.git",
-    gradient: "linear-gradient(135deg, #0369a1 0%, #0ea5e9 45%, #7dd3fc 100%)",
-    icon: "📊",
+    themeClass: "theme-blue-indigo",
+    hoverColors: ["rgba(59, 130, 246, 0.4)", "rgba(99, 102, 241, 0.2)"],
+    icon: FaChartBar,
+    iconColor: "#818cf8",
+    imageHeight: "220px",
   },
   {
     id: "uno-restaurant",
@@ -83,123 +111,156 @@ const projects = [
     tech: ["HTML", "CSS", "JavaScript"],
     demo: "https://yashrestaurant.ccbp.tech/",
     code: "https://github.com/Yashwanth1943/Restaurant-App.git",
-    gradient: "linear-gradient(135deg, #b45309 0%, #f59e0b 45%, #fbbf24 100%)",
-    icon: "🍽️",
+    themeClass: "theme-red-amber",
+    hoverColors: ["rgba(239, 68, 68, 0.4)", "rgba(245, 158, 11, 0.2)"],
+    icon: FaUtensils,
+    iconColor: "#f59e0b",
+    imageHeight: "290px",
   },
 ];
 
-const ProjectCard = memo(({ project, isActive, onClick, index }) => (
-  <button
-    className={`proj-card ${isActive ? "proj-card--active" : ""}`}
-    onClick={() => onClick(index)}
-    aria-label={`View ${project.title}`}
-    style={{ "--card-gradient": project.gradient }}
-  >
-    {/* Gradient face */}
-    <div className="proj-card__face">
-      <span className="proj-card__icon">{project.icon}</span>
-    </div>
+const ProjectCard = ({ project }) => {
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
-    <div className="proj-card__body">
-      <h3 className="proj-card__title">{project.title}</h3>
-      <div className="proj-card__pills">
-        {project.tech.slice(0, 3).map((t) => (
-          <span key={t} className="proj-card__pill">{t}</span>
-        ))}
-        {project.tech.length > 3 && (
-          <span className="proj-card__pill proj-card__pill--more">+{project.tech.length - 3}</span>
-        )}
-      </div>
-    </div>
+  const handleMouseMove = (e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setMousePos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
 
-    <div className="proj-card__active-bar" />
-  </button>
-));
-
-export default function Projects() {
-  const sectionRef = useRef(null);
-  const detailRef = useRef(null);
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  const handleSelect = useCallback((index) => {
-    if (index === activeIndex) return;
-    setActiveIndex(index);
-  }, [activeIndex]);
-
-  // Animate detail panel on change
-  useEffect(() => {
-    if (!detailRef.current) return;
-    gsap.fromTo(
-      detailRef.current,
-      { opacity: 0, y: 14 },
-      { opacity: 1, y: 0, duration: 0.38, ease: "power2.out" }
-    );
-  }, [activeIndex]);
-
-  // Section entrance animation
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".projects-heading", {
-        opacity: 0, y: 30, duration: 0.8, ease: "power3.out",
-        scrollTrigger: { trigger: sectionRef.current, start: "top 82%" },
+  const handleTouchStart = (e) => {
+    if (e.touches && e.touches[0]) {
+      const touch = e.touches[0];
+      const rect = e.currentTarget.getBoundingClientRect();
+      setMousePos({
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top,
       });
-      gsap.from(".proj-card", {
-        opacity: 0, y: 24, stagger: 0.07, duration: 0.5, ease: "power2.out",
-        scrollTrigger: { trigger: ".proj-grid", start: "top 88%" },
-      });
-    }, sectionRef);
-    return () => ctx.revert();
-  }, []);
+    }
+  };
 
-  const active = projects[activeIndex];
+  const IconComponent = project.icon;
 
   return (
-    <div className="projects-container" ref={sectionRef}>
-      <h1 className="projects-heading">My Work</h1>
-
-      {/* Featured panel */}
-      <div
-        className="proj-featured"
-        ref={detailRef}
-        style={{ "--card-gradient": active.gradient }}
-      >
-        {/* Gradient hero block */}
-        <div className="proj-featured__hero">
-          <span className="proj-featured__icon">{active.icon}</span>
-          <div className="proj-featured__hero-glow" />
-        </div>
-
-        {/* Info */}
-        <div className="proj-featured__info">
-          <h2 className="proj-featured__title">{active.title}</h2>
-          <div className="proj-featured__pills">
-            {active.tech.map((t) => (
-              <span key={t} className="tech-pill">{t}</span>
-            ))}
-          </div>
-          <p className="proj-featured__desc">{active.desc}</p>
-          <div className="proj-featured__links">
-            <a href={active.demo} target="_blank" rel="noopener noreferrer" className="btn btn-primary">
-              Live Demo
-            </a>
-            <a href={active.code} target="_blank" rel="noopener noreferrer" className="btn btn-secondary">
-              Source Code
-            </a>
+    <motion.div
+      className="proj-card"
+      onMouseMove={handleMouseMove}
+      onTouchStart={handleTouchStart}
+      whileHover={{
+        scale: 1.03,
+        y: -6,
+        transition: { type: "spring", stiffness: 350, damping: 22 }
+      }}
+      whileTap={{
+        scale: 0.98,
+        transition: { type: "spring", stiffness: 450, damping: 18 }
+      }}
+      style={{
+        "--mouse-x": `${mousePos.x}px`,
+        "--mouse-y": `${mousePos.y}px`,
+        "--hover-color1": project.hoverColors[0],
+        "--hover-color2": project.hoverColors[1],
+      }}
+    >
+      <div className={`proj-card__preview ${project.themeClass}`} style={{ height: project.imageHeight }}>
+        {/* Continuous organic moving mesh background */}
+        <div className="proj-card__mesh-bg" />
+        {/* Dynamic cursor-following liquid ink ripple glow */}
+        <div className="proj-card__hover-glow" />
+        
+        {/* Centered Floating Tech Badge */}
+        <div className="proj-card__logo-container">
+          <div className="proj-card__logo-badge">
+            <IconComponent className="proj-card__logo-icon" style={{ color: project.iconColor }} />
           </div>
         </div>
       </div>
 
-      {/* Card grid */}
-      <div className="proj-grid">
-        {projects.map((p, i) => (
-          <ProjectCard
-            key={p.id}
-            project={p}
-            index={i}
-            isActive={i === activeIndex}
-            onClick={handleSelect}
-          />
-        ))}
+      <div className="proj-card__content">
+        <h2 className="proj-card__title">{project.title}</h2>
+        <p className="proj-card__desc">{project.desc}</p>
+        
+        <div className="proj-card__pills">
+          {project.tech.map((t) => (
+            <span key={t} className="tech-pill">
+              {t}
+            </span>
+          ))}
+        </div>
+
+        <div className="proj-card__links">
+          <a
+            href={project.demo}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-primary"
+          >
+            Live Demo
+          </a>
+          <a
+            href={project.code}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn btn-secondary"
+          >
+            GitHub
+          </a>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default function Projects() {
+  const [columnsCount, setColumnsCount] = useState(3);
+
+  useEffect(() => {
+    const updateColumns = () => {
+      const w = window.innerWidth;
+      if (w < 768) {
+        setColumnsCount(1);
+      } else if (w < 1024) {
+        setColumnsCount(2);
+      } else if (w < 1440) {
+        setColumnsCount(3);
+      } else {
+        setColumnsCount(4);
+      }
+    };
+
+    updateColumns();
+    window.addEventListener("resize", updateColumns);
+    return () => window.removeEventListener("resize", updateColumns);
+  }, []);
+
+  // Split project items into column arrays
+  const columns = Array.from({ length: columnsCount }, () => []);
+  projects.forEach((project, idx) => {
+    columns[idx % columnsCount].push(project);
+  });
+
+  return (
+    <div className="projects-section-wrapper">
+      <h1 className="projects-heading">My Work</h1>
+
+      <div className="projects-marquee-container">
+        <div className="projects-marquee-grid">
+          {columns.map((column, colIdx) => {
+            // Duplicate columns to ensure seamless infinite loops
+            const loopItems = [...column, ...column];
+            return (
+              <div key={colIdx} className={`marquee-column col-${colIdx}`}>
+                <div className="marquee-column-inner">
+                  {loopItems.map((project, itemIdx) => (
+                    <ProjectCard key={`${project.id}-${itemIdx}`} project={project} />
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
