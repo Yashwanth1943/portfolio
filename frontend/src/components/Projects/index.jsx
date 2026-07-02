@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { 
-  FaReact, 
-  FaWallet, 
-  FaClipboardList, 
-  FaHeartbeat, 
-  FaBriefcase, 
-  FaShoppingCart, 
-  FaChartBar, 
-  FaUtensils 
+import {
+  FaReact,
+  FaWallet,
+  FaClipboardList,
+  FaHeartbeat,
+  FaBriefcase,
+  FaShoppingCart,
+  FaChartBar,
+  FaUtensils
 } from "react-icons/fa";
 import "./index.scss";
 
@@ -169,7 +169,7 @@ const ProjectCard = ({ project }) => {
         <div className="proj-card__mesh-bg" />
         {/* Dynamic cursor-following liquid ink ripple glow */}
         <div className="proj-card__hover-glow" />
-        
+
         {/* Centered Floating Tech Badge */}
         <div className="proj-card__logo-container">
           <div className="proj-card__logo-badge">
@@ -181,7 +181,7 @@ const ProjectCard = ({ project }) => {
       <div className="proj-card__content">
         <h2 className="proj-card__title">{project.title}</h2>
         <p className="proj-card__desc">{project.desc}</p>
-        
+
         <div className="proj-card__pills">
           {project.tech.map((t) => (
             <span key={t} className="tech-pill">

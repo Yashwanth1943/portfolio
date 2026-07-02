@@ -126,7 +126,10 @@ const Contact = () => {
 
   return (
     <div className="contact-section">
-      <h1 className="contact-title">Get in Touch</h1>
+      <h1 className="contact-title">Let's Connect</h1>
+      <p className="contact-description">
+        Open to full-time opportunities, freelance work, and exciting collaborations. If you have a role, project, or idea in mind, let's connect. Send me a message below or reach out on LinkedIn.
+      </p>
 
       <form className="contact-form" onSubmit={handleSubmit}>
         <div className="form-group">

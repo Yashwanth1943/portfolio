@@ -1,4 +1,6 @@
-/* Global Header Wrapper Container */
+/* ─────────────────────────────────────────────────────────
+   Global Header Wrapper Container
+   ───────────────────────────────────────────────────────── */
 .header-container {
   position: fixed;
   top: 24px;
@@ -8,12 +10,10 @@
   max-width: 1100px;
   display: flex;
   justify-content: flex-end;
-  /* Align brand to top-right on desktop */
   align-items: center;
   padding: 0;
   z-index: 1000;
   pointer-events: none;
-  /* Let clicks pass through empty wrapper areas */
   transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 
   background: transparent !important;
@@ -27,11 +27,12 @@
   top: 14px;
 }
 
-/* Floating Capsule brand wrapper */
+/* ─────────────────────────────────────────────────────────
+   Floating Capsule brand wrapper
+   ───────────────────────────────────────────────────────── */
 .brand-wrapper {
   position: relative;
   pointer-events: auto;
-  /* Re-enable clicks */
   border: 1px solid rgba(255, 255, 255, 0.08);
   padding: 6px 18px;
   border-radius: 999px;
@@ -42,7 +43,8 @@
   align-items: center;
   gap: 8px;
   z-index: 1;
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     border-color 0.6s ease,
     box-shadow 0.6s ease,
     filter 0.4s ease;
@@ -62,7 +64,7 @@
     transition: opacity 0.6s ease, backdrop-filter 0.6s ease;
   }
 
-  &>* {
+  & > * {
     position: relative;
     z-index: 2;
   }
@@ -108,7 +110,9 @@
   }
 }
 
-/* Brand Button Logo */
+/* ─────────────────────────────────────────────────────────
+   Brand Button
+   ───────────────────────────────────────────────────────── */
 .brand-btn {
   background: none !important;
   border: none !important;
@@ -149,7 +153,6 @@
     opacity: 0;
     transform: translate3d(20px, 0, 0);
   }
-
   100% {
     opacity: 1;
     transform: translate3d(0, 0, 0);
@@ -157,28 +160,19 @@
 }
 
 @keyframes brandMeshMove {
-  0% {
-    background-position: 0% 50%;
-  }
-
-  50% {
-    background-position: 100% 50%;
-  }
-
-  100% {
-    background-position: 0% 50%;
-  }
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-/* ─── Morphing Vector Hamburger Button ─────────────────────────────── */
-
+/* ─────────────────────────────────────────────────────────
+   Morphing Vector Hamburger Button
+   ───────────────────────────────────────────────────────── */
 .hamburger {
   display: none;
-  /* Desktop hides it, desktop nav uses sidebar */
   pointer-events: auto;
   cursor: pointer;
   z-index: 2000;
-  /* Stays above overlay menu panel */
   background: rgba(4, 3, 16, 0.45);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
@@ -208,8 +202,9 @@
   transform: translateY(-2px);
 }
 
-/* ─── Luxurious Mobile Full-screen Overlay ─────────────────────────── */
-
+/* ─────────────────────────────────────────────────────────
+   Mobile Navigation Overlay
+   ───────────────────────────────────────────────────────── */
 .mobile-nav-overlay {
   position: fixed;
   inset: 0;
@@ -217,9 +212,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(3, 2, 9, 0.45);
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+
+  /* Slightly darker, stronger blur for premium feel */
+  background: rgba(2, 1, 8, 0.58);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
   overflow: hidden;
 }
 
@@ -229,144 +226,201 @@
   z-index: 1;
 }
 
-/* Floating Backdrop Blur Depth Blobs */
+/* Background blobs — kept inside the overlay but toned down */
 .mobile-nav-bg-blob1,
 .mobile-nav-bg-blob2 {
   position: absolute;
-  width: 300px;
-  height: 300px;
   border-radius: 50%;
-  filter: blur(70px);
-  opacity: 0.25;
+  filter: blur(80px);
   pointer-events: none;
   z-index: 2;
+  /* Blobs are behind the sheet — no side glows visible outside it */
 }
 
 .mobile-nav-bg-blob1 {
+  width: 260px;
+  height: 260px;
   background: #a78bfa;
-  top: 15%;
-  left: 10%;
+  opacity: 0.12;            /* Toned-down, was 0.25 */
+  top: 18%;
+  left: 12%;
   animation: blobFloatLeft 12s ease-in-out infinite alternate;
 }
 
 .mobile-nav-bg-blob2 {
+  width: 240px;
+  height: 240px;
   background: #38bdf8;
-  bottom: 20%;
-  right: 15%;
+  opacity: 0.10;
+  bottom: 22%;
+  right: 14%;
   animation: blobFloatRight 12s ease-in-out infinite alternate;
 }
 
 @keyframes blobFloatLeft {
-  to {
-    transform: translate(40px, 30px) scale(1.15);
-  }
+  to { transform: translate(30px, 25px) scale(1.12); }
 }
 
 @keyframes blobFloatRight {
-  to {
-    transform: translate(-50px, -40px) scale(1.25);
-  }
+  to { transform: translate(-35px, -30px) scale(1.18); }
 }
 
-/* Center Floating Glass Panel Card */
+/* ─────────────────────────────────────────────────────────
+   Center Floating Glass Panel — REFINED
+   ───────────────────────────────────────────────────────── */
 .mobile-nav-panel {
   position: relative;
-  width: calc(100% - 48px);
-  max-width: 380px;
-  border-radius: 32px;
-  background: rgba(255, 255, 255, 0.035);
-  backdrop-filter: blur(30px);
-  -webkit-backdrop-filter: blur(30px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* 86% width → compact, well-proportioned */
+  width: 86%;
+  max-width: 360px;
+
+  /* Premium corner radius */
+  border-radius: 34px;
+
+  /* Strengthened frosted glass */
+  background: rgba(12, 10, 28, 0.72);
+  backdrop-filter: blur(36px) saturate(1.8);
+  -webkit-backdrop-filter: blur(36px) saturate(1.8);
+
+  /* Thin luminous border + subtle top highlight */
+  border: 1px solid rgba(255, 255, 255, 0.10);
+
+  /* Top highlight line for depth */
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.18) 40%,
+      rgba(255, 255, 255, 0.18) 60%,
+      transparent
+    );
+    border-radius: 0 0 2px 2px;
+    pointer-events: none;
+  }
+
+  /* Soft ambient shadow only — no side glows */
   box-shadow:
-    0 30px 60px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    0 32px 64px rgba(0, 0, 0, 0.75),
+    0 8px 24px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
   z-index: 10;
-  padding: 24px;
+  padding: 20px 16px 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   touch-action: pan-y;
-  /* Enable native vertical swipe gestures */
 }
 
-/* Drag indicator pill at the top of the card */
+/* ─────────────────────────────────────────────────────────
+   Drag Handle — thinner, shorter, lower opacity
+   ───────────────────────────────────────────────────────── */
 .swipe-indicator-bar {
-  width: 48px;
-  height: 5px;
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.15);
+  width: 36px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
   cursor: grab;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
+  flex-shrink: 0;
 
   &:active {
     cursor: grabbing;
   }
 }
 
-/* Mobile Nav Links Wrapper */
+/* ─────────────────────────────────────────────────────────
+   Nav Content List
+   ───────────────────────────────────────────────────────── */
 .mobile-nav-content {
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 8px;
+  gap: 4px;            /* Tighter, consistent spacing between items */
 }
 
-/* Individual Links */
+/* ─────────────────────────────────────────────────────────
+   Individual Nav Links — refined sizing
+   ───────────────────────────────────────────────────────── */
 .mobile-nav-link {
   position: relative;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
   width: 100%;
-  padding: 13px 20px;
-  border-radius: 16px;
+
+  /* 54px total height with symmetric padding */
+  padding: 0 20px;
+  height: 54px;
+
+  border-radius: 18px;
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #cbd5e1;
+  color: rgba(203, 213, 225, 0.75);
   text-align: left;
   outline: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: color 0.3s ease;
+  transition: color 0.25s ease;
 
   &:hover {
-    color: var(--active-color);
+    color: rgba(255, 255, 255, 0.95);
 
     .mobile-nav-icon {
       color: var(--active-color);
+      opacity: 1;
     }
   }
 
   &.active {
-    color: var(--active-color);
+    color: #ffffff;
 
     .mobile-nav-icon {
       color: var(--active-color);
+      opacity: 1;
     }
+  }
+
+  /* Press feedback — subtle scale */
+  &:active {
+    transform: scale(0.98);
+    transition: transform 0.12s ease;
   }
 }
 
 .mobile-nav-icon {
-  font-size: 1.15rem;
-  color: #94a3b8;
+  font-size: 1.2rem;    /* 20–22px equivalent */
+  width: 22px;
+  height: 22px;
+  color: rgba(148, 163, 184, 0.7);
   z-index: 5;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: color 0.3s ease;
+  flex-shrink: 0;
+  transition: color 0.25s ease, opacity 0.25s ease;
 }
 
 .mobile-nav-text {
-  font-size: 1.05rem;
-  font-weight: 600;
-  letter-spacing: -0.2px;
+  font-size: 1rem;
+  font-weight: 500;       /* Medium — was 600 */
+  letter-spacing: -0.15px;
   z-index: 5;
+  line-height: 1;
 }
 
-/* Liquid Glow active state capsule behind link */
+/* ─────────────────────────────────────────────────────────
+   Gooey Liquid Active Indicator — refined
+   ───────────────────────────────────────────────────────── */
 .mobile-gooey-wrapper {
   position: relative;
   width: 100%;
@@ -379,44 +433,56 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  gap: 8px;
+  gap: 4px;           /* Must match mobile-nav-content gap */
   z-index: 1;
 }
 
 .mobile-gooey-cell {
   position: relative;
   width: 100%;
-  height: 48px; // matches button height
+  height: 54px;       /* Must match mobile-nav-link height */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
+/* Dark background anchor (glass background match) */
 .mobile-gooey-anchor {
-  width: 90%;
-  height: 38px;
+  width: 88%;
+  height: 40px;       /* Active pill height — smaller than cell */
   border-radius: 14px;
-  background: #060511; // matches mobile floating menu glass background
+  background: rgba(12, 10, 28, 0.72); /* Matches panel background */
   transition: background-color 0.4s ease;
 }
 
+/* Active state accent pill */
 .mobile-nav-glow-accent {
   position: absolute;
-  width: 90%;
-  height: 38px;
+  width: 88%;         /* Leaves 6% breathing room on each side */
+  height: 40px;
   border-radius: 14px;
-  background: var(--active-color);
+
+  /* Soft gradient instead of flat saturated color */
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--active-color) 60%, transparent),
+    color-mix(in srgb, var(--active-color) 35%, transparent)
+  );
+
   z-index: 2;
+
+  /* Subtle glow — reduced from heavy orange, much softer */
   box-shadow:
-    0 0 15px var(--active-color-shadow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    0 0 18px color-mix(in srgb, var(--active-color) 30%, transparent),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
   pointer-events: none;
   transform-origin: center;
 }
 
-/* ─── Media Queries ────────────────────────────────────────────────── */
-
-/* Tablets and Laptops (992px and below) */
+/* ─────────────────────────────────────────────────────────
+   Tablet / Mobile Media Queries
+   ───────────────────────────────────────────────────────── */
 @media (max-width: 992px) {
   .header-container {
     display: flex;
@@ -436,7 +502,6 @@
     border: 1px solid rgba(255, 255, 255, 0.08) !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
     pointer-events: auto;
-    /* Enable clicks on mobile header bar wrapper */
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
@@ -464,7 +529,7 @@
     border-color: transparent !important;
     box-shadow: none !important;
     transform: none !important;
-    animation: none !important; // Disable desktop pulse animations
+    animation: none !important;
   }
 
   .hamburger {
@@ -488,12 +553,13 @@
   }
 }
 
-/* Portrait Mobile (480px and below) */
+/* ─────────────────────────────────────────────────────────
+   Portrait Mobile — safe area insets
+   ───────────────────────────────────────────────────────── */
 @media (max-width: 480px) {
   .header-container {
     top: 15px;
     width: calc(100% - 24px);
-    /* smaller margins on tiny screens */
     padding: 8px 18px;
   }
 
@@ -506,25 +572,38 @@
   }
 
   .mobile-nav-panel {
-    padding: 18px;
-    width: calc(100% - 32px);
-    border-radius: 28px;
+    /* Slightly narrower on very small screens */
+    width: 88%;
+    padding: 16px 14px 20px;
+    border-radius: 30px;
+
+    /* Respect Dynamic Island / notch */
+    padding-top: max(16px, env(safe-area-inset-top, 16px));
   }
 
   .mobile-nav-link {
-    padding: 11px 16px;
+    height: 52px;
+    padding: 0 16px;
     gap: 12px;
   }
 
+  .mobile-gooey-cell {
+    height: 52px;
+  }
+
   .mobile-nav-text {
-    font-size: 0.98rem;
+    font-size: 0.95rem;
+  }
+
+  .mobile-nav-icon {
+    font-size: 1.1rem;
   }
 }
 
-/* ─── Accessibility: Reduced-Motion Preferences ─────────────────── */
-
+/* ─────────────────────────────────────────────────────────
+   Accessibility: Reduced-Motion
+   ───────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-
   .mobile-nav-bg-blob1,
   .mobile-nav-bg-blob2 {
     animation: none !important;

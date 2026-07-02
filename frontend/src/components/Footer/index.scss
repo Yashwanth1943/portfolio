@@ -3,10 +3,10 @@
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-  padding: 60px clamp(16px, 4vw, 40px) 30px;
+  padding: 40px clamp(16px, 4vw, 40px) 16px;
   color: #94a3b8;
   width: 100%;
-  margin-top: 80px;
+  margin-top: 60px;
 }
 
 .footer-content {
@@ -98,14 +98,12 @@
 
 .footer-bottom {
   max-width: 1120px;
-  margin: 42px auto 0;
-  padding-top: 20px;
+  margin: 20px auto 0;
+  padding-top: 16px;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
-  font-size: 0.84rem;
-  color: #64748b;
 }
 
 .footer-copyright {

@@ -1,10 +1,7 @@
-import { useState, useEffect, useRef } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import useDragScroll from "../../hooks/useDragScroll";
+import { useState, useEffect, useRef, memo, useCallback } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import "./index.scss";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const withPublicUrl = (src) => {
   if (!src || /^https?:\/\//i.test(src)) {
@@ -63,7 +60,7 @@ const certificatesData = [
   },
 ];
 
-const CertificateCard = ({ cert, handleCertificateClick }) => {
+const CertificateCard = memo(({ cert, handleCertificateClick }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const resolvedSrc = withPublicUrl(cert.src);
 
@@ -96,22 +93,32 @@ const CertificateCard = ({ cert, handleCertificateClick }) => {
       </div>
     </div>
   );
-};
+});
 
-const rotations = [-2.5, 1.8, -1.2, 2.2, -1.8, 1.5];
-const yOffsets = [4, -2, 2, -4, 0, -3];
+CertificateCard.displayName = "CertificateCard";
+
+const getCircularDiff = (index, currentIndex, N) => {
+  let diff = index - currentIndex;
+  while (diff < -N / 2) diff += N;
+  while (diff > N / 2) diff -= N;
+  return diff;
+};
 
 const Certificates = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedCertificate, setSelectedCertificate] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedCertIndex, setSelectedCertIndex] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(1); // Start at 1 for symmetrical layout
+  const [hasEntered, setHasEntered] = useState(false);
+  const [zoomScale, setZoomScale] = useState(1);
   const [windowWidth, setWindowWidth] = useState(
     typeof window !== "undefined" ? window.innerWidth : 1200
   );
-  const sectionRef = useRef(null);
-  const viewportRef = useRef(null);
 
-  useDragScroll(viewportRef);
+  const touchStart = useRef(0);
+  const touchDistanceRef = useRef(0);
+  const viewerRef = useRef(null);
+
+  const N = certificatesData.length;
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -119,194 +126,410 @@ const Certificates = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const handleCertificateClick = (cert, resolvedSrc) => {
-    setSelectedCertificate({ ...cert, resolvedSrc });
+  const handleCertificateClick = (cert) => {
+    const idx = certificatesData.findIndex((c) => c.src === cert.src);
+    setSelectedCertIndex(idx !== -1 ? idx : 0);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setSelectedCertificate(null);
+    setSelectedCertIndex(null);
+    setZoomScale(1);
   };
 
-  let visibleCount = 3;
-  if (windowWidth < 640) {
-    visibleCount = 1;
-  } else if (windowWidth < 1024) {
-    visibleCount = 2;
-  }
-
-  const maxIndex = Math.max(0, certificatesData.length - visibleCount);
-
-  const handleScroll = () => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const cardWidth = el.scrollWidth / certificatesData.length;
-    const index = Math.round(el.scrollLeft / cardWidth);
-    setCurrentIndex(Math.min(maxIndex, index));
+  // Match responsive card widths from index.scss
+  const getCardWidth = () => {
+    if (windowWidth > 1024) return 380;
+    if (windowWidth > 768) return 320;
+    return 260;
   };
+  const cardWidth = getCardWidth();
 
   const handlePrev = () => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const cardWidth = el.scrollWidth / certificatesData.length;
-    el.scrollTo({
-      left: el.scrollLeft - cardWidth,
-      behavior: "smooth",
-    });
+    setCurrentIndex((prev) => prev - 1);
   };
 
   const handleNext = () => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const cardWidth = el.scrollWidth / certificatesData.length;
-    el.scrollTo({
-      left: el.scrollLeft + cardWidth,
-      behavior: "smooth",
-    });
+    setCurrentIndex((prev) => prev + 1);
   };
+
+  const handlePrevCert = useCallback(() => {
+    setSelectedCertIndex((prev) => (prev - 1 + N) % N);
+    setZoomScale(1);
+  }, [N]);
+
+  const handleNextCert = useCallback(() => {
+    setSelectedCertIndex((prev) => (prev + 1) % N);
+    setZoomScale(1);
+  }, [N]);
 
   const handleDotClick = (idx) => {
-    const el = viewportRef.current;
-    if (!el) return;
-    const cardWidth = el.scrollWidth / certificatesData.length;
-    el.scrollTo({
-      left: idx * cardWidth,
-      behavior: "smooth",
-    });
-    setCurrentIndex(idx);
+    const currentActiveDot = ((currentIndex % N) + N) % N;
+    let diff = idx - currentActiveDot;
+    if (diff < -N / 2) diff += N;
+    if (diff > N / 2) diff -= N;
+    setCurrentIndex((prev) => prev + diff);
   };
 
+  const handleDragEnd = (event, info) => {
+    const swipeThreshold = 50;
+    if (info.offset.x < -swipeThreshold) {
+      setCurrentIndex((prev) => prev + 1);
+    } else if (info.offset.x > swipeThreshold) {
+      setCurrentIndex((prev) => prev - 1);
+    }
+  };
+
+  // Preload adjacent images
   useEffect(() => {
-    const section = sectionRef.current;
+    if (selectedCertIndex === null) return;
+    const nextIdx = (selectedCertIndex + 1) % N;
+    const prevIdx = (selectedCertIndex - 1 + N) % N;
 
-    const ctx = gsap.context(() => {
-      gsap.from(section.querySelector(".certificate-heading"), {
-        opacity: 0,
-        y: 30,
-        duration: 0.9,
-        ease: "power3.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-        },
+    const imgNext = new Image();
+    imgNext.src = withPublicUrl(certificatesData[nextIdx].src);
+
+    const imgPrev = new Image();
+    imgPrev.src = withPublicUrl(certificatesData[prevIdx].src);
+  }, [selectedCertIndex, N]);
+
+  // Lock body scroll when modal open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isModalOpen || selectedCertIndex === null) return undefined;
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        handleCloseModal();
+      } else if (e.key === "ArrowRight") {
+        handleNextCert();
+      } else if (e.key === "ArrowLeft") {
+        handlePrevCert();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isModalOpen, selectedCertIndex, handleNextCert, handlePrevCert]);
+
+  // Mouse wheel zoom
+  useEffect(() => {
+    if (!isModalOpen) return undefined;
+    const el = viewerRef.current;
+    if (!el) return undefined;
+
+    const handleWheel = (e) => {
+      e.preventDefault();
+      setZoomScale((prev) => {
+        const next = prev + (e.deltaY < 0 ? 0.25 : -0.25);
+        return Math.max(1, Math.min(3.5, next));
       });
+    };
 
-      gsap.from(section.querySelectorAll(".certificate-banner"), {
-        opacity: 0,
-        y: 20,
-        stagger: 0.12,
-        duration: 0.6,
-        ease: "power2.out",
-        scrollTrigger: {
-          trigger: section,
-          start: "top 85%",
-        },
-      });
-    }, sectionRef);
+    el.addEventListener("wheel", handleWheel, { passive: false });
+    return () => el.removeEventListener("wheel", handleWheel);
+  }, [isModalOpen, selectedCertIndex]);
 
-    return () => ctx.revert();
-  }, []);
+  const handleDoubleClick = () => {
+    setZoomScale((prev) => (prev > 1 ? 1 : 2.5));
+  };
+
+  const handleTouchStart = (e) => {
+    if (e.touches.length === 1) {
+      touchStart.current = e.touches[0].clientX;
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      touchDistanceRef.current = Math.sqrt(dx * dx + dy * dy);
+    }
+  };
+
+  const handleTouchMove = (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (touchDistanceRef.current > 0) {
+        const factor = dist / touchDistanceRef.current;
+        setZoomScale((prev) => Math.max(1, Math.min(3.5, prev * factor)));
+      }
+      touchDistanceRef.current = dist;
+    }
+  };
+
+  const handleTouchEnd = (e) => {
+    touchDistanceRef.current = 0;
+    if (e.changedTouches.length === 1 && e.touches.length === 0) {
+      if (zoomScale > 1) return; // Allow dragging to pan when zoomed
+      const diff = touchStart.current - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 60) {
+        if (diff > 0) {
+          handleNextCert();
+        } else {
+          handlePrevCert();
+        }
+      }
+    }
+  };
+
+  const activeDotIndex = ((currentIndex % N) + N) % N;
 
   return (
-    <section className="certificate-section" ref={sectionRef}>
-      <h1 className="certificate-heading">Certificates</h1>
+    <>
+      <section className="certificate-section">
+        <h1 className="certificate-heading">Certificates</h1>
 
-      <div className="certificate-carousel-wrapper">
-        <button
-          className="carousel-btn prev"
-          onClick={handlePrev}
-          disabled={currentIndex === 0}
-          aria-label="Previous Certificate"
-        >
-          &#8249;
-        </button>
+        <div className="certificate-carousel-wrapper">
+          <button
+            className="carousel-btn prev"
+            onClick={handlePrev}
+            aria-label="Previous Certificate"
+          >
+            &#8249;
+          </button>
 
-        <div
-          className="certificate-carousel-viewport"
-          ref={viewportRef}
-          onScroll={handleScroll}
-        >
-          <div className="certificate-carousel-track">
-            {certificatesData.map((cert, index) => (
-              <div
-                key={index}
-                className="certificate-card-wrapper"
-                style={{
-                  flex: `0 0 ${100 / visibleCount}%`,
-                  padding: "0 12px",
-                  zIndex: certificatesData.length - index,
-                }}
-              >
-                <div
-                  style={{
-                    transform: `rotate(${rotations[index % rotations.length]}deg) translateY(${yOffsets[index % yOffsets.length]}px)`,
-                    transformOrigin: "center center",
-                    width: "100%",
-                    height: "100%",
+          <div className="certificate-carousel-viewport">
+            {certificatesData.map((cert, index) => {
+              const diff = getCircularDiff(index, currentIndex, N);
+              const absDiff = Math.abs(diff);
+
+              // Lazy render offscreen cards to optimize performance
+              if (absDiff > 1 && hasEntered) {
+                return null;
+              }
+
+              // Stagger indices for entrance animations (visible cards only)
+              let visibleIndex = 0;
+              if (diff === -1) visibleIndex = 0;
+              if (diff === 0) visibleIndex = 1;
+              if (diff === 1) visibleIndex = 2;
+
+              let x = 0;
+              let scale = 1;
+              let opacity = 1;
+              let filter = "blur(0px)";
+              let zIndex = 10 - absDiff;
+
+              if (diff === 0) {
+                x = 0;
+                scale = 1;
+                opacity = 1;
+                filter = "blur(0px)";
+                zIndex = 10;
+              } else if (diff === -1) {
+                x = -cardWidth * 0.75; // 25% overlap
+                scale = 0.90;
+                opacity = 0.75;
+                filter = "blur(1.5px)";
+                zIndex = 8;
+              } else if (diff === 1) {
+                x = cardWidth * 0.75; // 25% overlap
+                scale = 0.90;
+                opacity = 0.75;
+                filter = "blur(1.5px)";
+                zIndex = 8;
+              }
+
+              return (
+                <motion.div
+                  key={index}
+                  className="certificate-card-wrapper"
+                  initial={{ opacity: 0, y: 60 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-100px" }}
+                  transition={
+                    !hasEntered
+                      ? {
+                        delay: visibleIndex * 0.15,
+                        duration: 0.8,
+                        type: "spring",
+                        stiffness: 100,
+                        damping: 18,
+                      }
+                      : {
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 26,
+                        mass: 0.8,
+                      }
+                  }
+                  animate={
+                    hasEntered
+                      ? {
+                        x,
+                        scale,
+                        opacity,
+                        filter,
+                        zIndex,
+                      }
+                      : undefined
+                  }
+                  onAnimationComplete={() => {
+                    if (!hasEntered) {
+                      setHasEntered(true);
+                    }
                   }}
+                  // Custom swipe handling
+                  drag={diff === 0 ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={0.2}
+                  onDragEnd={handleDragEnd}
+                  // Interactive hover state only on active card
+                  whileHover={
+                    diff === 0
+                      ? {
+                        scale: 1.02,
+                        y: -6,
+                        transition: { duration: 0.3, ease: "easeOut" },
+                      }
+                      : undefined
+                  }
                 >
                   <CertificateCard
                     cert={cert}
                     handleCertificateClick={handleCertificateClick}
                   />
-                </div>
-              </div>
-            ))}
+                </motion.div>
+              );
+            })}
           </div>
-        </div>
 
-        <button
-          className="carousel-btn next"
-          onClick={handleNext}
-          disabled={currentIndex >= maxIndex}
-          aria-label="Next Certificate"
-        >
-          &#8250;
-        </button>
-      </div>
-
-      <div className="carousel-dots">
-        {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
           <button
-            key={idx}
-            className={`carousel-dot ${currentIndex === idx ? "active" : ""}`}
-            onClick={() => handleDotClick(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-          />
-        ))}
-      </div>
-
-      {isModalOpen && (
-        <div className="modal-overlay" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={handleCloseModal}>
-              &times;
-            </button>
-            {selectedCertificate?.type === "pdf" ? (
-              <div className="pdf-modal-body">
-                <p>{selectedCertificate.title}</p>
-                <a
-                  href={selectedCertificate.resolvedSrc}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="pdf-open-link"
-                >
-                  Open certificate in new tab
-                </a>
-              </div>
-            ) : (
-              <img
-                src={selectedCertificate?.resolvedSrc}
-                alt="Full-size Certificate"
-                className="modal-image"
-              />
-            )}
-          </div>
+            className="carousel-btn next"
+            onClick={handleNext}
+            aria-label="Next Certificate"
+          >
+            &#8250;
+          </button>
         </div>
-      )}
 
-    </section>
+        <div className="carousel-dots">
+          {certificatesData.map((_, idx) => (
+            <button
+              key={idx}
+              className={`carousel-dot ${activeDotIndex === idx ? "active" : ""}`}
+              onClick={() => handleDotClick(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {createPortal(
+        <AnimatePresence>
+          {isModalOpen && selectedCertIndex !== null && (
+            <motion.div
+              className="document-viewer-overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCloseModal}
+            >
+              <motion.div
+                className="document-viewer-card"
+                initial={{ scale: 0.95, y: 16, opacity: 0 }}
+                animate={{ scale: 1, y: 0, opacity: 1 }}
+                exit={{ scale: 0.95, y: 16, opacity: 0 }}
+                transition={{ type: "spring", stiffness: 300, damping: 28 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {/* FIXED HEADER */}
+                <header className="viewer-header">
+                  <div className="viewer-header-left">
+                    <span className="viewer-badge">Certificate Preview</span>
+                    <span className="viewer-title">{certificatesData[selectedCertIndex].title}</span>
+                  </div>
+                  <div className="viewer-header-right">
+                    <a
+                      href={withPublicUrl(certificatesData[selectedCertIndex].src)}
+                      download
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="viewer-btn"
+                    >
+                      Download
+                    </a>
+                    <a
+                      href={withPublicUrl(certificatesData[selectedCertIndex].src)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="viewer-btn"
+                    >
+                      Open Original
+                    </a>
+                    <button className="viewer-btn close-btn" onClick={handleCloseModal}>
+                      Close ✕
+                    </button>
+                  </div>
+                </header>
+
+                {/* MAIN CONTENT VIEWPORT */}
+                <div
+                  className="viewer-viewport"
+                  onTouchStart={handleTouchStart}
+                  onTouchMove={handleTouchMove}
+                  onTouchEnd={handleTouchEnd}
+                  ref={viewerRef}
+                >
+                  <div className="viewer-surface">
+                    <motion.img
+                      key={selectedCertIndex}
+                      initial={{ opacity: 0, scale: 0.98 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3 }}
+                      src={withPublicUrl(certificatesData[selectedCertIndex].src)}
+                      alt={certificatesData[selectedCertIndex].title}
+                      className="viewer-img"
+                      style={{
+                        transform: `scale(${zoomScale})`,
+                        cursor: zoomScale > 1 ? "grab" : "zoom-in"
+                      }}
+                      onDoubleClick={handleDoubleClick}
+                      drag={zoomScale > 1}
+                      dragConstraints={{ left: -300, right: 300, top: -250, bottom: 250 }}
+                      dragElastic={0.15}
+                    />
+                  </div>
+
+                  {/* Reset Zoom Button float overlay */}
+                  {zoomScale > 1 && (
+                    <button className="reset-zoom-btn" onClick={() => setZoomScale(1)}>
+                      Reset Zoom
+                    </button>
+                  )}
+                </div>
+
+                {/* FIXED FOOTER CONTROLS */}
+                {N > 1 && (
+                  <footer className="viewer-footer">
+                    <button className="nav-btn" onClick={handlePrevCert}>
+                      Previous
+                    </button>
+                    <span className="pagination">
+                      {selectedCertIndex + 1} / {N}
+                    </span>
+                    <button className="nav-btn" onClick={handleNextCert}>
+                      Next
+                    </button>
+                  </footer>
+                )}
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
+    </>
   );
 };
 

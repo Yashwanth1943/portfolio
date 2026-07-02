@@ -2,16 +2,11 @@ import React from 'react';
 import './index.scss';
 import { FaLinkedin, FaGithub } from "react-icons/fa";
 import { HiOutlineChevronDoubleUp } from "react-icons/hi2";
-import { MorphingText } from "./MorphingText";
 
 const Footer = ({ scrollToSection }) => {
 
   return (
     <footer className="footer-container">
-      <MorphingText
-        texts={["Thank You", "Thanks for Visiting!", "Have a Great Day!"]}
-        className="footer-thank-you"
-      />
       <div className="footer-content">
         <div className="footer-brand">
           <h2 className="footer-logo" onClick={() => scrollToSection("hero")}>Yashwanth</h2>

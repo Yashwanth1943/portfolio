@@ -28,9 +28,17 @@
 }
 
 @keyframes headingGradient {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* ─── Infinite Vertical Scrolling Showcase Grid ────────────────────── */
@@ -40,35 +48,19 @@
   width: 100%;
   height: 760px;
   overflow: hidden;
-  background: rgba(4, 3, 16, 0.4);
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  background: transparent;
 
-  // Vignette Top Shadow Fade
-  &::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 140px;
-    background: linear-gradient(to bottom, #03000d, rgba(3, 0, 13, 0.95) 20%, transparent);
-    z-index: 10;
-    pointer-events: none;
-  }
-
-  // Vignette Bottom Shadow Fade
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 140px;
-    background: linear-gradient(to top, #03000d, rgba(3, 0, 13, 0.95) 20%, transparent);
-    z-index: 10;
-    pointer-events: none;
-  }
+  /* Premium fade-out mask at top and bottom margins */
+  mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      black 18%,
+      black 82%,
+      transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0%,
+      black 18%,
+      black 82%,
+      transparent 100%);
 
   @media (max-width: 768px) {
     height: 600px;
@@ -99,12 +91,15 @@
   &.col-0 .marquee-column-inner {
     animation: verticalMarquee 26s linear infinite;
   }
+
   &.col-1 .marquee-column-inner {
     animation: verticalMarquee 32s linear infinite;
   }
+
   &.col-2 .marquee-column-inner {
     animation: verticalMarquee 22s linear infinite;
   }
+
   &.col-3 .marquee-column-inner {
     animation: verticalMarquee 28s linear infinite;
   }
@@ -132,6 +127,7 @@
   0% {
     transform: translateY(0);
   }
+
   100% {
     transform: translateY(-50%);
   }
@@ -147,27 +143,28 @@
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 
-    0 10px 30px rgba(0, 0, 0, 0.35), 
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.02);
   display: flex;
   flex-direction: column;
   width: 100%;
-  transition: 
+  transition:
     border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1),
     box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: transform, box-shadow, border-color;
 
   // Triggers on hover or active tap (mobile feedback)
-  &:hover, &:active {
+  &:hover,
+  &:active {
     border-color: rgba(167, 139, 250, 0.45);
-    box-shadow: 
+    box-shadow:
       0 20px 40px rgba(167, 139, 250, 0.14),
       0 30px 60px rgba(0, 0, 0, 0.6);
 
     .proj-card__logo-badge {
       border-color: rgba(167, 139, 250, 0.45);
-      box-shadow: 
+      box-shadow:
         0 0 20px rgba(167, 139, 250, 0.3),
         0 12px 28px rgba(0, 0, 0, 0.4);
       background: rgba(255, 255, 255, 0.1);
@@ -195,7 +192,8 @@
   overflow: hidden;
 
   // Two glowing blobs that morph position organically
-  &::before, &::after {
+  &::before,
+  &::after {
     content: "";
     position: absolute;
     width: 260px;
@@ -221,64 +219,128 @@
 
 // Continuous organic morph cycles
 @keyframes meshMove1 {
-  0% { transform: translate(-10%, -10%) scale(1); }
-  50% { transform: translate(25%, 15%) scale(1.2); }
-  100% { transform: translate(-5%, 30%) scale(0.95); }
+  0% {
+    transform: translate(-10%, -10%) scale(1);
+  }
+
+  50% {
+    transform: translate(25%, 15%) scale(1.2);
+  }
+
+  100% {
+    transform: translate(-5%, 30%) scale(0.95);
+  }
 }
 
 @keyframes meshMove2 {
-  0% { transform: translate(15%, 15%) scale(1.1); }
-  50% { transform: translate(-25%, -5%) scale(0.9); }
-  100% { transform: translate(10%, -20%) scale(1.15); }
+  0% {
+    transform: translate(15%, 15%) scale(1.1);
+  }
+
+  50% {
+    transform: translate(-25%, -5%) scale(0.9);
+  }
+
+  100% {
+    transform: translate(10%, -20%) scale(1.15);
+  }
 }
 
 /* Gradient Theme Palettes for Mesh Backgrounds */
 .theme-purple-blue {
   background: #080516;
-  .proj-card__mesh-bg::before { background: #6d28d9; }
-  .proj-card__mesh-bg::after { background: #38bdf8; }
+
+  .proj-card__mesh-bg::before {
+    background: #6d28d9;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #38bdf8;
+  }
 }
 
 .theme-emerald-cyan {
   background: #02090c;
-  .proj-card__mesh-bg::before { background: #059669; }
-  .proj-card__mesh-bg::after { background: #06b6d4; }
+
+  .proj-card__mesh-bg::before {
+    background: #059669;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #06b6d4;
+  }
 }
 
 .theme-orange-red {
   background: #11050a;
-  .proj-card__mesh-bg::before { background: #ea580c; }
-  .proj-card__mesh-bg::after { background: #f43f5e; }
+
+  .proj-card__mesh-bg::before {
+    background: #ea580c;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #f43f5e;
+  }
 }
 
 .theme-pink-violet {
   background: #0e0413;
-  .proj-card__mesh-bg::before { background: #db2777; }
-  .proj-card__mesh-bg::after { background: #c084fc; }
+
+  .proj-card__mesh-bg::before {
+    background: #db2777;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #c084fc;
+  }
 }
 
 .theme-teal-blue {
   background: #030811;
-  .proj-card__mesh-bg::before { background: #0d9488; }
-  .proj-card__mesh-bg::after { background: #2563eb; }
+
+  .proj-card__mesh-bg::before {
+    background: #0d9488;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #2563eb;
+  }
 }
 
 .theme-gold-orange {
   background: #100705;
-  .proj-card__mesh-bg::before { background: #d97706; }
-  .proj-card__mesh-bg::after { background: #f59e0b; }
+
+  .proj-card__mesh-bg::before {
+    background: #d97706;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #f59e0b;
+  }
 }
 
 .theme-blue-indigo {
   background: #040417;
-  .proj-card__mesh-bg::before { background: #2563eb; }
-  .proj-card__mesh-bg::after { background: #6366f1; }
+
+  .proj-card__mesh-bg::before {
+    background: #2563eb;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #6366f1;
+  }
 }
 
 .theme-red-amber {
   background: #130306;
-  .proj-card__mesh-bg::before { background: #dc2626; }
-  .proj-card__mesh-bg::after { background: #f59e0b; }
+
+  .proj-card__mesh-bg::before {
+    background: #dc2626;
+  }
+
+  .proj-card__mesh-bg::after {
+    background: #f59e0b;
+  }
 }
 
 /* Dynamic Cursor Liquid Ripple Glow Overlay */
@@ -289,12 +351,10 @@
   z-index: 2;
   pointer-events: none;
   // Centered at tracking custom coordinates (--mouse-x, --mouse-y)
-  background: radial-gradient(
-    circle 260px at var(--mouse-x, 0px) var(--mouse-y, 0px),
-    var(--hover-color1, rgba(255, 255, 255, 0.3)) 0%,
-    var(--hover-color2, rgba(255, 255, 255, 0.15)) 45%,
-    transparent 80%
-  );
+  background: radial-gradient(circle 260px at var(--mouse-x, 0px) var(--mouse-y, 0px),
+      var(--hover-color1, rgba(255, 255, 255, 0.3)) 0%,
+      var(--hover-color2, rgba(255, 255, 255, 0.15)) 45%,
+      transparent 80%);
   mix-blend-mode: screen;
   transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -317,16 +377,16 @@
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
+  box-shadow:
     0 16px 36px rgba(0, 0, 0, 0.35),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   display: flex;
   align-items: center;
   justify-content: center;
   animation: logoFloating 6s ease-in-out infinite;
-  transition: 
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-    border-color 0.4s ease, 
+  transition:
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.4s ease,
     box-shadow 0.4s ease,
     background-color 0.4s ease;
   will-change: transform;
@@ -338,9 +398,17 @@
 }
 
 @keyframes logoFloating {
-  0% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-7px) rotate(3deg); }
-  100% { transform: translateY(0) rotate(0deg); }
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-7px) rotate(3deg);
+  }
+
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
 }
 
 /* Content Details */
@@ -420,7 +488,7 @@
   cursor: pointer;
   border: none;
   flex: 1;
-  transition: 
+  transition:
     transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
     box-shadow 0.25s ease,
     filter 0.25s ease;
@@ -457,11 +525,13 @@
     animation: none !important;
     transform: none !important;
   }
+
   .proj-card__mesh-bg::before,
   .proj-card__mesh-bg::after {
     animation: none !important;
     transform: none !important;
   }
+
   .proj-card__logo-badge {
     animation: none !important;
   }

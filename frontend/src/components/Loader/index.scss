@@ -27,12 +27,14 @@
 
 .writing-text {
   font-family: "Mr De Haviland", cursive;
-  font-size: 150px; /* Grand calligraphic size suited for "Yashwant" */
+  font-size: 150px;
+  /* Grand calligraphic size suited for "Yashwant" */
   font-weight: 400;
   letter-spacing: 1px;
   fill: rgba(167, 139, 250, 0);
   stroke: url(#writing-gradient);
-  stroke-width: 1.8; /* Thin elegant calligraphic pen signature outline */
+  stroke-width: 1.8;
+  /* Thin elegant calligraphic pen signature outline */
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-dasharray: 1200;
@@ -46,11 +48,14 @@
     stroke-dashoffset: 1200;
     fill: rgba(167, 139, 250, 0);
   }
+
   65% {
     stroke-dashoffset: 0;
     fill: rgba(167, 139, 250, 0);
   }
-  85%, 100% {
+
+  85%,
+  100% {
     stroke-dashoffset: 0;
     fill: rgba(255, 255, 255, 0.95);
   }

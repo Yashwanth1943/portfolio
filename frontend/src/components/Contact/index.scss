@@ -15,7 +15,7 @@
   background: linear-gradient(90deg, #A78BFA, #38BDF8);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  margin-bottom: 40px;
+  margin-bottom: 16px;
 
   @media (max-width: 768px) {
     font-size: clamp(1.55rem, 3.2vw, 2rem);
@@ -23,7 +23,28 @@
 
   @media (max-width: 480px) {
     font-size: clamp(1.4rem, 3vw, 1.8rem);
-    margin-bottom: 30px;
+    margin-bottom: 12px;
+  }
+}
+
+.contact-description {
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  color: #94a3b8;
+  line-height: 1.7;
+  max-width: 650px;
+  margin: 0 auto 36px;
+  text-align: center;
+  font-weight: 500;
+  
+  @media (max-width: 768px) {
+    max-width: 85%;
+    margin-bottom: 28px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 100%;
+    margin-bottom: 24px;
+    line-height: 1.6;
   }
 }
 
