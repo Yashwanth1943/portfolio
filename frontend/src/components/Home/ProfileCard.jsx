@@ -161,6 +161,7 @@ const ProfileCardComponent = ({
 
   const handlePointerMove = useCallback(
     (event) => {
+      if (event.pointerType !== "mouse") return;
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
       const { x, y } = getOffsets(event, shell);
@@ -171,6 +172,7 @@ const ProfileCardComponent = ({
 
   const handlePointerEnter = useCallback(
     (event) => {
+      if (event.pointerType !== "mouse") return;
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
 
@@ -187,25 +189,29 @@ const ProfileCardComponent = ({
     [tiltEngine]
   );
 
-  const handlePointerLeave = useCallback(() => {
-    const shell = shellRef.current;
-    if (!shell || !tiltEngine) return;
+  const handlePointerLeave = useCallback(
+    (event) => {
+      if (event.pointerType !== "mouse") return;
+      const shell = shellRef.current;
+      if (!shell || !tiltEngine) return;
 
-    tiltEngine.toCenter();
+      tiltEngine.toCenter();
 
-    const checkSettle = () => {
-      const { x, y, tx, ty } = tiltEngine.getCurrent();
-      const settled = Math.hypot(tx - x, ty - y) < 0.6;
-      if (settled) {
-        shell.classList.remove("active");
-        leaveRafRef.current = null;
-      } else {
-        leaveRafRef.current = requestAnimationFrame(checkSettle);
-      }
-    };
-    if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
-    leaveRafRef.current = requestAnimationFrame(checkSettle);
-  }, [tiltEngine]);
+      const checkSettle = () => {
+        const { x, y, tx, ty } = tiltEngine.getCurrent();
+        const settled = Math.hypot(tx - x, ty - y) < 0.6;
+        if (settled) {
+          shell.classList.remove("active");
+          leaveRafRef.current = null;
+        } else {
+          leaveRafRef.current = requestAnimationFrame(checkSettle);
+        }
+      };
+      if (leaveRafRef.current) cancelAnimationFrame(leaveRafRef.current);
+      leaveRafRef.current = requestAnimationFrame(checkSettle);
+    },
+    [tiltEngine]
+  );
 
   const handleDeviceOrientation = useCallback(
     (event) => {
@@ -240,9 +246,9 @@ const ProfileCardComponent = ({
     const pointerLeaveHandler = handlePointerLeave;
     const deviceOrientationHandler = handleDeviceOrientation;
 
-    shell.addEventListener("pointerenter", pointerEnterHandler);
-    shell.addEventListener("pointermove", pointerMoveHandler);
-    shell.addEventListener("pointerleave", pointerLeaveHandler);
+    shell.addEventListener("pointerenter", pointerEnterHandler, { passive: true });
+    shell.addEventListener("pointermove", pointerMoveHandler, { passive: true });
+    shell.addEventListener("pointerleave", pointerLeaveHandler, { passive: true });
 
     const handleClick = () => {
       if (!enableMobileTilt || window.location.protocol !== "https:") return;
@@ -252,12 +258,12 @@ const ProfileCardComponent = ({
           .requestPermission()
           .then((state) => {
             if (state === "granted") {
-              window.addEventListener("deviceorientation", deviceOrientationHandler);
+              window.addEventListener("deviceorientation", deviceOrientationHandler, { passive: true });
             }
           })
-          .catch(console.error);
+          .catch(() => {});
       } else {
-        window.addEventListener("deviceorientation", deviceOrientationHandler);
+        window.addEventListener("deviceorientation", deviceOrientationHandler, { passive: true });
       }
     };
     shell.addEventListener("click", handleClick);

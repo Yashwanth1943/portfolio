@@ -123,6 +123,11 @@ const connectToDb = async () => {
     return;
   }
 
+  if (!process.env.MONGO_URI) {
+    console.warn("MONGO_URI environment variable is missing. MongoDB connection skipped, running in fallback mode.");
+    return;
+  }
+
   isConnectingToDb = true;
   clearReconnectTimer();
 
@@ -132,7 +137,6 @@ const connectToDb = async () => {
       socketTimeoutMS: DB_SOCKET_TIMEOUT_MS,
       maxPoolSize: 10,
     });
-    console.log("MongoDB connected");
   } catch (err) {
     console.error("MongoDB connection error:", err);
     scheduleReconnect();
@@ -205,7 +209,6 @@ app.post("/api/contact", async (req, res) => {
       );
 
       const duration = Date.now() - start;
-      console.log(`POST /api/contact completed via MongoDB in ${duration}ms`);
 
       return res.status(201).json({
         message: "Form submitted successfully!",
@@ -221,7 +224,6 @@ app.post("/api/contact", async (req, res) => {
   try {
     const saved = await saveContactFallback({ name, email, message });
     const duration = Date.now() - start;
-    console.log(`POST /api/contact completed via JSON fallback in ${duration}ms`);
     return res.status(201).json({
       message: "Form submitted successfully!",
       saved,
@@ -238,5 +240,4 @@ app.get("/", (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
 });

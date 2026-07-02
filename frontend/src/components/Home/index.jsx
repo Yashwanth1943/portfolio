@@ -86,7 +86,7 @@ const HomePage = () => {
                 avatarUrl={import.meta.env.BASE_URL + "profile.png"}
                 showUserInfo={true}
                 enableTilt={true}
-                enableMobileTilt={true}
+                enableMobileTilt={false}
                 onContactClick={() => {
                   document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
                 }}

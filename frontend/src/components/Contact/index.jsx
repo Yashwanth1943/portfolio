@@ -109,7 +109,6 @@ const Contact = () => {
         setStatus(payload?.error || "Request failed. Please try again.");
       }
     } catch (err) {
-      console.error(err);
       setServerState("down");
       if (err.name === "AbortError") {
         setStatus("Server is taking longer than expected. Please try again shortly.");
