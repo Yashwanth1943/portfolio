@@ -33,7 +33,9 @@ const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.has(origin)) return true;
   if (/^http:\/\/localhost:\d+$/.test(origin)) return true;
-  return /^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin);
+  if (/^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin)) return true;
+  if (/^https:\/\/[a-zA-Z0-9-]+\.(?:on)?render\.com$/.test(origin)) return true;
+  return false;
 };
 
 const saveContactFallback = async (data) => {
