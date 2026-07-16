@@ -244,46 +244,348 @@ app.post("/api/contact", async (req, res) => {
     }
   }
 
-  // 3. Try to send Email notification to owner
+  // 3. Send notification email to owner
   try {
     console.log("📧 Sending email notification to owner...");
+
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: '"Yashwanth Portfolio" <yashwanthkosuri@gmail.com>',
       to: process.env.EMAIL_USER,
-      subject: `New Portfolio Contact - ${name}`,
+      subject: `📩 New Portfolio Contact - ${name}`,
       html: `
-        <h2>New Contact Form Submission</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong></p>
-        <p>${message}</p>
-      `,
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+</head>
+
+<body style="margin:0;padding:0;background:#f4f7fb;font-family:Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td align="center">
+
+<table width="600" cellpadding="0" cellspacing="0"
+style="background:#ffffff;border-radius:18px;overflow:hidden;margin:40px 0;box-shadow:0 15px 40px rgba(0,0,0,.08);">
+
+<tr>
+<td style="padding:35px;background:linear-gradient(135deg,#4F46E5,#7C3AED,#9333EA);text-align:center;color:white;">
+
+<h1 style="margin:0;font-size:28px;">
+🚀 New Portfolio Contact
+</h1>
+
+<p style="margin-top:10px;font-size:15px;opacity:.9;">
+Someone contacted you through your portfolio.
+</p>
+
+</td>
+</tr>
+
+<tr>
+
+<td style="padding:35px;">
+
+<table width="100%" cellpadding="10">
+
+<tr>
+<td width="120"><strong>Name</strong></td>
+<td>${name}</td>
+</tr>
+
+<tr>
+<td><strong>Email</strong></td>
+<td>
+<a href="mailto:${email}">
+${email}
+</a>
+</td>
+</tr>
+
+<tr>
+<td valign="top"><strong>Message</strong></td>
+
+<td>
+
+<div style="
+background:#f8fafc;
+padding:18px;
+border-radius:10px;
+border-left:5px solid #6366F1;
+line-height:1.8;
+">
+
+${message}
+
+</div>
+
+</td>
+
+</tr>
+
+</table>
+
+<br>
+
+<div align="center">
+
+<a href="mailto:${email}"
+
+style="
+display:inline-block;
+padding:14px 28px;
+background:#4F46E5;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+">
+
+Reply Now
+
+</a>
+
+</div>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td
+style="
+padding:20px;
+background:#f8fafc;
+text-align:center;
+font-size:13px;
+color:#64748b;
+">
+
+© ${new Date().getFullYear()} Yashwanth Portfolio
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+</tr>
+</table>
+
+</body>
+</html>
+`,
     });
-    console.log("✅ Notification email sent to owner! Message ID:", info.messageId);
-  } catch (emailError) {
-    console.error("❌ Failed to send notification email to owner:", emailError.message);
+
+    console.log("✅ Notification email sent! Message ID:", info.messageId);
+
+  } catch (error) {
+    console.error("❌ Owner mail failed:", error);
   }
 
-  // 3b. Try to send auto-reply confirmation email to visitor
+
+  // 4. Send confirmation email to visitor
   try {
-    console.log(`📧 Sending confirmation email to visitor: ${email}...`);
+    console.log(`📧 Sending confirmation email to ${email}...`);
+
     const info = await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: '"Yashwanth Portfolio" <yashwanthkosuri@gmail.com>',
       to: email,
       subject: "Thank you for reaching out! - Yashwanth",
       html: `
-        <h3>Hi ${name},</h3>
-        <p>Thank you for connecting! I have received your message and will get back to you as soon as possible.</p>
-        <br/>
-        <p>Best regards,</p>
-        <p><strong>Yashwanth</strong></p>
-      `,
-    });
-    console.log("✅ Confirmation email sent to visitor! Message ID:", info.messageId);
-  } catch (visitorEmailError) {
-    console.error("❌ Failed to send confirmation email to visitor:", visitorEmailError.message);
-  }
+<!DOCTYPE html>
 
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+</head>
+
+<body style="margin:0;background:#eef2ff;font-family:Arial,sans-serif;">
+
+<table width="100%">
+
+<tr>
+
+<td align="center">
+
+<table width="600"
+
+style="
+background:white;
+margin:40px;
+border-radius:18px;
+overflow:hidden;
+box-shadow:0 15px 35px rgba(0,0,0,.08);
+">
+
+<tr>
+
+<td
+
+style="
+background:linear-gradient(135deg,#4F46E5,#9333EA);
+padding:45px;
+text-align:center;
+color:white;
+">
+
+<h1>
+
+Thanks for contacting me 👋
+
+</h1>
+
+<p>
+
+I'll get back to you very soon.
+
+</p>
+
+</td>
+
+</tr>
+
+<tr>
+
+<td style="padding:35px;">
+
+<h2>
+
+Hello ${name},
+
+</h2>
+
+<p style="line-height:1.9;color:#475569;">
+
+Thank you for contacting me through my portfolio website.
+
+Your message has been received successfully.
+
+I appreciate your interest and I'll reply as soon as possible.
+
+</p>
+
+<br>
+
+<div
+
+style="
+background:#f8fafc;
+padding:20px;
+border-radius:12px;
+border-left:4px solid #6366F1;
+">
+
+<strong>Your Message</strong>
+
+<br><br>
+
+${message}
+
+</div>
+
+<br><br>
+
+<div align="center">
+
+<a
+
+href="https://yashwanthkosuri.in"
+
+style="
+display:inline-block;
+padding:15px 30px;
+background:#4F46E5;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+">
+
+Visit Portfolio
+
+</a>
+
+&nbsp;&nbsp;
+
+<a
+
+href="https://linkedin.com/in/YOUR-LINKEDIN"
+
+style="
+display:inline-block;
+padding:15px 30px;
+background:#0A66C2;
+color:white;
+text-decoration:none;
+border-radius:8px;
+font-weight:bold;
+">
+
+LinkedIn
+
+</a>
+
+</div>
+
+<br><br>
+
+Regards,
+
+<br>
+
+<b>Yashwanth</b>
+
+<br>
+
+Full Stack Developer
+
+</td>
+
+</tr>
+
+<tr>
+
+<td
+
+style="
+background:#f8fafc;
+padding:18px;
+text-align:center;
+font-size:13px;
+color:#64748b;
+">
+
+© ${new Date().getFullYear()} Yashwanth Portfolio
+
+</td>
+
+</tr>
+
+</table>
+
+</td>
+
+</tr>
+
+</table>
+
+</body>
+
+</html>
+`,
+    });
+
+    console.log("✅ Visitor confirmation mail sent! Message ID:", info.messageId);
+
+  } catch (error) {
+    console.error("❌ Visitor mail failed:", error);
+  }
   // 4. Return response
   if (savedData) {
     return res.status(201).json({
