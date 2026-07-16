@@ -1,8 +1,6 @@
-import dns from "dns";
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
-dns.setDefaultResultOrder("ipv4first");
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
@@ -15,7 +13,7 @@ const transporter = nodemailer.createTransport({
 
 transporter.verify((error) => {
     if (error) {
-        console.error("❌ Mail configuration error:", error);
+        console.error(error);
     } else {
         console.log("✅ Mail server is ready");
     }
