@@ -31,8 +31,8 @@ const First5Seconds = memo(({ onComplete }) => {
       initial={{ backgroundColor: "#060608" }}
       exit={{ backgroundColor: "rgba(6, 6, 8, 0)", transition: { duration: 0.55, ease: "easeInOut" } }}
     >
-      <motion.div 
-        className="splash-ambient-bg" 
+      <motion.div
+        className="splash-ambient-bg"
         exit={{ opacity: 0, transition: { duration: 0.45, ease: "easeInOut" } }}
       />
 
@@ -83,7 +83,7 @@ const First5Seconds = memo(({ onComplete }) => {
               animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
               transition={{ duration: 0.6, ease: EASE }}
             >
-              <motion.span 
+              <motion.span
                 className="splash-im-label"
                 exit={{ opacity: 0, transition: { duration: 0.3 } }}
               >
@@ -98,7 +98,7 @@ const First5Seconds = memo(({ onComplete }) => {
               </motion.span>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               className="splash-subtitle-container"
               exit={{ opacity: 0, transition: { duration: 0.35 } }}
             >

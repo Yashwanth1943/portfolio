@@ -25,7 +25,8 @@ const allowedOrigins = new Set([
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:10000",
-  "https://portofolio-neon-six.vercel.app",
+  "https://yashwanthkosuri.in",
+  "https://portfolio-two-pi-ddymchiwqd.vercel.app"
 ]);
 
 const isAllowedOrigin = (origin) => {

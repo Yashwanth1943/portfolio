@@ -36,7 +36,10 @@ const sectionColors = {
   contact: "#22d3ee",
 };
 
-const LiquidActiveGlow = ({ activeSection, activeColor }) => {
+const BUTTON_SPRING_CONFIG = { damping: 25, stiffness: 220, mass: 0.6 };
+const BAR_SPRING_CONFIG = { damping: 30, stiffness: 180, mass: 0.8 };
+
+const LiquidActiveGlow = memo(({ activeSection, activeColor }) => {
   const [animating, setAnimating] = useState(false);
   const [wobble, setWobble] = useState(false);
 
@@ -72,22 +75,28 @@ const LiquidActiveGlow = ({ activeSection, activeColor }) => {
       }}
     />
   );
-};
+});
+LiquidActiveGlow.displayName = "LiquidActiveGlow";
 
-const AsideIconButton = ({ item, activeSection, scrollToSection }) => {
+const AsideIconButton = memo(({ item, isActive, scrollToSection }) => {
   const buttonRef = useRef(null);
   const iconX = useMotionValue(0);
   const iconY = useMotionValue(0);
 
-  const springConfig = { damping: 25, stiffness: 220, mass: 0.6 };
-  const iconSpringX = useSpring(iconX, springConfig);
-  const iconSpringY = useSpring(iconY, springConfig);
+  const iconSpringX = useSpring(iconX, BUTTON_SPRING_CONFIG);
+  const iconSpringY = useSpring(iconY, BUTTON_SPRING_CONFIG);
 
   useEffect(() => {
     const btn = buttonRef.current;
     if (!btn) return;
 
     const handleMouseMove = (e) => {
+      // Early exit if mouse is far from sidebar horizontally
+      if (e.clientX > 150) {
+        iconX.set(0);
+        iconY.set(0);
+        return;
+      }
       const rect = btn.getBoundingClientRect();
       const btnCenterX = rect.left + rect.width / 2;
       const btnCenterY = rect.top + rect.height / 2;
@@ -116,8 +125,8 @@ const AsideIconButton = ({ item, activeSection, scrollToSection }) => {
       iconY.set(0);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    btn.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    btn.addEventListener("mouseleave", handleMouseLeave, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -129,7 +138,7 @@ const AsideIconButton = ({ item, activeSection, scrollToSection }) => {
     <motion.button
       ref={buttonRef}
       onClick={() => scrollToSection(item.id)}
-      className={`aside-nav-btn ${activeSection === item.id ? "active" : ""}`}
+      className={`aside-nav-btn ${isActive ? "active" : ""}`}
       aria-label={`Scroll to ${item.label}`}
       style={{
         x: iconSpringX,
@@ -139,29 +148,38 @@ const AsideIconButton = ({ item, activeSection, scrollToSection }) => {
       }}
     >
       <span className="tooltip">{item.label}</span>
-      <span className={`aside-icon-container ${activeSection === item.id ? "active-levitate" : ""}`}>
+      <span className={`aside-icon-container ${isActive ? "active-levitate" : ""}`}>
         {item.icon}
       </span>
     </motion.button>
   );
-};
+});
+AsideIconButton.displayName = "AsideIconButton";
 
 const AsideBar = ({ activeSection, scrollToSection }) => {
   const containerRef = useRef(null);
   const containerX = useMotionValue(0);
   const containerY = useMotionValue(0);
 
-  const springConfig = { damping: 30, stiffness: 180, mass: 0.8 };
-  const containerSpringX = useSpring(containerX, springConfig);
-  const containerSpringY = useSpring(containerY, springConfig);
+  const containerSpringX = useSpring(containerX, BAR_SPRING_CONFIG);
+  const containerSpringY = useSpring(containerY, BAR_SPRING_CONFIG);
 
-  const activeColor = sectionColors[activeSection] || "#a78bfa";
+  const activeColor = React.useMemo(
+    () => sectionColors[activeSection] || "#a78bfa",
+    [activeSection]
+  );
 
   useEffect(() => {
     const asideEl = containerRef.current;
     if (!asideEl) return;
 
     const handleMouseMove = (e) => {
+      // Early exit if mouse is far from sidebar horizontally
+      if (e.clientX > 320) {
+        containerX.set(0);
+        containerY.set(0);
+        return;
+      }
       const rect = asideEl.getBoundingClientRect();
       const asideCenterX = rect.left + rect.width / 2;
       const asideCenterY = rect.top + rect.height / 2;
@@ -190,12 +208,12 @@ const AsideBar = ({ activeSection, scrollToSection }) => {
       containerY.set(0);
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    asideEl.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    asideEl.addEventListener("mouseleave", handleMouseLeave, { passive: true });
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
-      asideEl.addEventListener("mouseleave", handleMouseLeave);
+      asideEl.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [containerX, containerY]);
 
@@ -223,7 +241,7 @@ const AsideBar = ({ activeSection, scrollToSection }) => {
           </defs>
         </svg>
 
-        <div className="aside-nav-wrapper" style={{ position: "relative", width: 38 }}>
+        <div className="aside-nav-wrapper" style={{ position: "relative", width: 34 }}>
           <div className="aside-gooey-container" style={{ filter: "url(#aside-gooey)" }}>
             {navItems.map((item) => {
               const isActive = activeSection === item.id;
@@ -244,10 +262,10 @@ const AsideBar = ({ activeSection, scrollToSection }) => {
           <nav className="aside-nav" aria-label="Sidebar shortcuts" style={{ position: "relative", zIndex: 5 }}>
             <ul>
               {navItems.map((item) => (
-                <li key={item.id} style={{ position: "relative", width: 38, height: 38 }}>
+                <li key={item.id} style={{ position: "relative", width: 34, height: 34 }}>
                   <AsideIconButton
                     item={item}
-                    activeSection={activeSection}
+                    isActive={activeSection === item.id}
                     scrollToSection={scrollToSection}
                   />
                 </li>

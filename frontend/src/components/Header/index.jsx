@@ -14,25 +14,25 @@ import "./index.scss";
 
 /* ─── static data ──────────────────────────────────────────── */
 const navItems = [
-  { id: "hero",          label: "Home",         icon: <FaHome /> },
-  { id: "about",         label: "About",        icon: <FaUser /> },
-  { id: "skills",        label: "Skills",       icon: <FaCode /> },
-  { id: "education",     label: "Education",    icon: <FaGraduationCap /> },
-  { id: "projects",      label: "Projects",     icon: <FaLaptopCode /> },
-  { id: "certifications",label: "Certificates", icon: <FaCertificate /> },
-  { id: "achievements",  label: "Achievements", icon: <FaTrophy /> },
-  { id: "contact",       label: "Connect",      icon: <FaEnvelope /> },
+  { id: "hero", label: "Home", icon: <FaHome /> },
+  { id: "about", label: "About", icon: <FaUser /> },
+  { id: "skills", label: "Skills", icon: <FaCode /> },
+  { id: "education", label: "Education", icon: <FaGraduationCap /> },
+  { id: "projects", label: "Projects", icon: <FaLaptopCode /> },
+  { id: "certifications", label: "Certificates", icon: <FaCertificate /> },
+  { id: "achievements", label: "Achievements", icon: <FaTrophy /> },
+  { id: "contact", label: "Connect", icon: <FaEnvelope /> },
 ];
 
 const sectionColors = {
-  hero:           "#a78bfa",
-  about:          "#38bdf8",
-  skills:         "#34d399",
-  education:      "#fb7185",
-  projects:       "#f59e0b",
+  hero: "#a78bfa",
+  about: "#38bdf8",
+  skills: "#34d399",
+  education: "#fb7185",
+  projects: "#f59e0b",
   certifications: "#c084fc",
-  achievements:   "#ec4899",
-  contact:        "#22d3ee",
+  achievements: "#ec4899",
+  contact: "#22d3ee",
 };
 
 const BRAND_TRANSITION = {
@@ -49,8 +49,8 @@ const BRAND_TRANSITION = {
  */
 const OVERLAY_VARIANTS = {
   hidden: { opacity: 0 },
-  show:   { opacity: 1, transition: { duration: 0.26 } },
-  exit:   { opacity: 0, transition: { duration: 0.20 } },
+  show: { opacity: 1, transition: { duration: 0.26 } },
+  exit: { opacity: 0, transition: { duration: 0.20 } },
 };
 
 const PANEL_VARIANTS = {
@@ -121,12 +121,12 @@ const MobileActiveGlow = memo(({ activeSection }) => {
       className="mobile-nav-glow-accent"
       animate={squish
         ? { scaleY: 1.25, scaleX: 0.82 }
-        : { scaleY: 1,    scaleX: 1 }
+        : { scaleY: 1, scaleX: 1 }
       }
       transition={{
-        layout:  { type: "spring", stiffness: 260, damping: 22, mass: 1.2 },
-        scaleY:  { type: "spring", stiffness: 200, damping: 14 },
-        scaleX:  { type: "spring", stiffness: 200, damping: 14 },
+        layout: { type: "spring", stiffness: 260, damping: 22, mass: 1.2 },
+        scaleY: { type: "spring", stiffness: 200, damping: 14 },
+        scaleX: { type: "spring", stiffness: 200, damping: 14 },
       }}
       style={{ transformOrigin: "center" }}
     />
@@ -208,8 +208,8 @@ const Header = ({
   /* animation variants */
   const overlayVariants = {
     hidden: { opacity: 0 },
-    show:   { opacity: 1, transition: { duration: 0.28 } },
-    exit:   { opacity: 0, transition: { duration: 0.22 } },
+    show: { opacity: 1, transition: { duration: 0.28 } },
+    exit: { opacity: 0, transition: { duration: 0.22 } },
   };
 
   const panelVariants = {
@@ -226,7 +226,7 @@ const Header = ({
 
   const listVariants = {
     hidden: {},
-    show:   { transition: { staggerChildren: 0.035, delayChildren: 0.06 } },
+    show: { transition: { staggerChildren: 0.035, delayChildren: 0.06 } },
   };
 
   const itemVariants = {
@@ -246,9 +246,9 @@ const Header = ({
   /* Memoize the CSS vars object — new object ref every render breaks React bailout */
   const cssVars = useMemo(
     () => ({
-      "--active-color":        activeColor,
+      "--active-color": activeColor,
       "--active-color-shadow": `${activeColor}40`,
-      "--active-color-alpha":  `${activeColor}15`,
+      "--active-color-alpha": `${activeColor}15`,
     }),
     [activeColor]
   );
@@ -266,14 +266,29 @@ const Header = ({
         >
           <button onClick={handleBrandClick} className="brand-btn" aria-label="Scroll to top">
             {showBrand && (
-              <motion.span
-                className="brand-badge-text"
-                layoutId="portfolio-brand-name"
-                transition={{ layout: BRAND_TRANSITION }}
-                onLayoutAnimationComplete={onBrandTransitionComplete}
-              >
-                YASHWANTH
-              </motion.span>
+              <>
+                <AnimatePresence>
+                  {revealContent && (
+                    <motion.img
+                      initial={{ opacity: 0, width: 0, marginRight: 0 }}
+                      animate={{ opacity: 1, width: 28, marginRight: 8 }}
+                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      src={import.meta.env.BASE_URL + "yashwanth logo.png"}
+                      alt="Yashwanth Logo"
+                      className="brand-logo"
+                    />
+                  )}
+                </AnimatePresence>
+                <motion.span
+                  className="brand-badge-text"
+                  layoutId="portfolio-brand-name"
+                  layout="position"
+                  transition={{ layout: BRAND_TRANSITION }}
+                  onLayoutAnimationComplete={onBrandTransitionComplete}
+                >
+                  YASHWANTH
+                </motion.span>
+              </>
             )}
           </button>
         </div>
@@ -301,9 +316,9 @@ const Header = ({
                 strokeWidth="2.2"
                 strokeLinecap="round"
                 variants={{
-                  menu:  { d: "M 4 8 L 20 8" },
+                  menu: { d: "M 4 8 L 20 8" },
                   hover: { d: "M 4 8 L 20 8" },
-                  open:  { d: "M 5 5 L 19 19" },
+                  open: { d: "M 5 5 L 19 19" },
                 }}
                 transition={{ type: "spring", stiffness: 350, damping: 22 }}
               />
@@ -312,9 +327,9 @@ const Header = ({
                 strokeWidth="2.2"
                 strokeLinecap="round"
                 variants={{
-                  menu:  { d: "M 4 16 L 13 16" },
+                  menu: { d: "M 4 16 L 13 16" },
                   hover: { d: "M 4 16 L 17 16" },
-                  open:  { d: "M 5 19 L 19 5" },
+                  open: { d: "M 5 19 L 19 5" },
                 }}
                 transition={{ type: "spring", stiffness: 350, damping: 22 }}
               />

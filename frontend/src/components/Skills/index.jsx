@@ -34,8 +34,8 @@ const SkillCard = memo(({
   onMouseLeave
 }) => {
   return (
-    <motion.div
-      className="card-physics-wrapper"
+    <div
+      className={`card-physics-wrapper ${cardStatus}`}
       style={{
         position: "absolute",
         left: `${skill.restingX}px`,
@@ -47,6 +47,9 @@ const SkillCard = memo(({
         willChange: "transform",
         transformStyle: "preserve-3d",
         backfaceVisibility: "hidden",
+        "--float-dur-y": `${skill.floatDurationY}s`,
+        "--float-dur-x": `${skill.floatDurationX}s`,
+        "--float-delay": `${-skill.floatDelay}s`, // Negative delay makes animations start immediately at different points!
       }}
     >
       <motion.div
@@ -57,78 +60,48 @@ const SkillCard = memo(({
         animate={
           cardStatus === "hovered"
             ? {
-                y: expandUp ? (isMobile ? -119.3 : -142.7) : -6,
-                scale: 1.15,
-                rotate: 0,
-                opacity: 1,
-              }
+              y: expandUp ? (isMobile ? -119.3 : -142.7) : -6,
+              scale: 1.15,
+              rotate: 0,
+              opacity: 1,
+            }
             : cardStatus === "dimmed"
-            ? {
+              ? {
                 y: 0,
                 scale: 0.96,
                 rotate: 0,
                 opacity: 0.5,
               }
-            : cardStatus === "filtered"
-            ? {
-                y: 0,
-                scale: 0.85,
-                rotate: 0,
-                opacity: 0.12,
-              }
-            : {
-                // Deterministic local idle float, perfectly returning to 0/1
-                y: [0, -6, 0, 6, 0], // 6px maximum vertical float
-                x: [0, 4.5, 0, -4.5, 0], // 4.5px maximum horizontal float
-                rotate: [0, 1.0, 0, -1.0, 0], // subtle ±1° rotation
-                scale: [1, 1.015, 1], // tiny scale breathing (1 ↔ 1.015)
-                opacity: 1,
-              }
+              : cardStatus === "filtered"
+                ? {
+                  y: 0,
+                  scale: 0.85,
+                  rotate: 0,
+                  opacity: 0.12,
+                }
+                : {
+                  y: 0,
+                  x: 0,
+                  rotate: 0,
+                  scale: 1,
+                  opacity: 1,
+                }
         }
-        transition={
-          cardStatus === "active"
-            ? {
-                y: {
-                  repeat: Infinity,
-                  duration: skill.floatDurationY,
-                  delay: skill.floatDelay,
-                  ease: "easeInOut",
-                },
-                x: {
-                  repeat: Infinity,
-                  duration: skill.floatDurationX,
-                  delay: skill.floatDelay,
-                  ease: "easeInOut",
-                },
-                rotate: {
-                  repeat: Infinity,
-                  duration: skill.floatDurationRotate,
-                  delay: skill.floatDelay,
-                  ease: "easeInOut",
-                },
-                scale: {
-                  repeat: Infinity,
-                  duration: skill.floatDurationScale,
-                  delay: skill.floatDelay,
-                  ease: "easeInOut",
-                },
-              }
-            : {
-                type: "spring",
-                stiffness: 150,
-                damping: 15,
-                mass: 0.8,
-              }
-        }
+        transition={{
+          type: "spring",
+          stiffness: 150,
+          damping: 15,
+          mass: 0.8,
+        }}
         onMouseEnter={() => onMouseEnter(index)}
         onMouseLeave={onMouseLeave}
       >
         {/* Backglow element (blurred behind card) */}
         <div className="card-ambient-glow" />
-
+ 
         {/* Masked gradient border */}
         <div className="card-glow" />
-
+ 
         <div className="card-content">
           {expandUp && (
             <motion.div
@@ -148,9 +121,9 @@ const SkillCard = memo(({
               <div className="card-divider" />
             </motion.div>
           )}
-
+ 
           <h3 className="card-title">{skill.name}</h3>
-
+ 
           {!expandUp && (
             <motion.div
               className="card-details"
@@ -171,7 +144,7 @@ const SkillCard = memo(({
           )}
         </div>
       </motion.div>
-    </motion.div>
+    </div>
   );
 });
 
@@ -279,7 +252,7 @@ const Skills = () => {
     const numCards = skillsList.length;
     const centerX = width / 2;
     const centerY = height / 2;
-    
+
     // Spread cards out in a ring relative to container dimensions
     const radiusX = Math.max(50, centerX - cardW - 30);
     const radiusY = Math.max(50, centerY - cardH - 30);

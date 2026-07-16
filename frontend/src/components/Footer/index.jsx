@@ -9,7 +9,14 @@ const Footer = ({ scrollToSection }) => {
     <footer className="footer-container">
       <div className="footer-content">
         <div className="footer-brand">
-          <h2 className="footer-logo" onClick={() => scrollToSection("hero")}>Yashwanth</h2>
+          <div className="footer-logo-wrapper" onClick={() => scrollToSection("hero")}>
+            <img 
+              className="footer-logo-img" 
+              src={import.meta.env.BASE_URL + "yashwanth logo.png"} 
+              alt="Yashwanth Logo" 
+            />
+            <h2 className="footer-logo">Yashwanth</h2>
+          </div>
           <p className="footer-tagline">
             Building clean, fast, and accessible digital products.
           </p>

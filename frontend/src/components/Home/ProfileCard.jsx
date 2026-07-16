@@ -154,17 +154,21 @@ const ProfileCardComponent = ({
     };
   }, [enableTilt]);
 
-  const getOffsets = (evt, el) => {
-    const rect = el.getBoundingClientRect();
-    return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
-  };
+  const rectRef = useRef(null);
 
   const handlePointerMove = useCallback(
     (event) => {
       if (event.pointerType !== "mouse") return;
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
-      const { x, y } = getOffsets(event, shell);
+      
+      let rect = rectRef.current;
+      if (!rect) {
+        rect = shell.getBoundingClientRect();
+        rectRef.current = rect;
+      }
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
       tiltEngine.setTarget(x, y);
     },
     [tiltEngine]
@@ -183,7 +187,11 @@ const ProfileCardComponent = ({
         shell.classList.remove("entering");
       }, ANIMATION_CONFIG.ENTER_TRANSITION_MS);
 
-      const { x, y } = getOffsets(event, shell);
+      const rect = shell.getBoundingClientRect();
+      rectRef.current = rect;
+      
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
       tiltEngine.setTarget(x, y);
     },
     [tiltEngine]
@@ -192,6 +200,7 @@ const ProfileCardComponent = ({
   const handlePointerLeave = useCallback(
     (event) => {
       if (event.pointerType !== "mouse") return;
+      rectRef.current = null;
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
 
