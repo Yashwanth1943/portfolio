@@ -35,6 +35,48 @@
   margin: 0 auto 36px;
   text-align: center;
   font-weight: 500;
+
+  a {
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 600;
+    position: relative;
+    display: inline-block;
+    transition: color 0.3s ease;
+
+    .arrow {
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 0.85em;
+      margin-left: 2px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      transform: scaleX(0);
+      height: 1.5px;
+      bottom: -1px;
+      left: 0;
+      background-color: #a78bfa;
+      transform-origin: bottom right;
+      transition: transform 0.25s ease-out;
+    }
+
+    &:hover {
+      color: #a78bfa;
+      
+      &::after {
+        transform: scaleX(1);
+        transform-origin: bottom left;
+      }
+
+      .arrow {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
   
   @media (max-width: 768px) {
     max-width: 85%;
@@ -125,11 +167,34 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
 
   &:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(56, 189, 248, 0.3);
+  }
+
+  &.success {
+    background: linear-gradient(90deg, #10b981, #059669);
+    cursor: default;
+    &:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  &.error {
+    background: linear-gradient(90deg, #f87171, #ef4444);
+    &:hover {
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+    }
+  }
+
+  &.warning {
+    background: linear-gradient(90deg, #fbbf24, #f59e0b);
+    &:hover {
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.3);
+    }
   }
 
   @media (max-width: 480px) {
@@ -141,11 +206,27 @@
 
 .status-message {
   margin-top: 20px;
-  color: #A78BFA;
   font-weight: 500;
+  transition: all 0.3s ease;
 
   @media (max-width: 480px) {
     font-size: clamp(0.88rem, 1.2vw, 0.96rem);
+  }
+
+  &.success {
+    color: #10b981;
+  }
+
+  &.error {
+    color: #f87171;
+  }
+
+  &.warning {
+    color: #fbbf24;
+  }
+
+  &.info {
+    color: #a78bfa;
   }
 }
 

@@ -11,9 +11,18 @@ const Contact = () => {
     message: "",
   });
 
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState({ text: "", type: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverState, setServerState] = useState("checking");
+
+  useEffect(() => {
+    if (status.text && status.type !== "info") {
+      const timer = setTimeout(() => {
+        setStatus({ text: "", type: "" });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
 
   const API_BASE = (
     import.meta.env.VITE_API_BASE ||
@@ -61,6 +70,9 @@ const Contact = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+    if (status.text) {
+      setStatus({ text: "", type: "" });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -68,11 +80,11 @@ const Contact = () => {
     if (isSubmitting) return;
 
     if (serverState === "waking" || serverState === "down") {
-      setStatus("Trying to send message...");
+      setStatus({ text: "Trying to send message...", type: "info" });
     }
 
     setIsSubmitting(true);
-    setStatus("Sending...");
+    setStatus({ text: "Sending...", type: "info" });
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
@@ -93,29 +105,29 @@ const Contact = () => {
 
       if (response.ok) {
         setServerState("ready");
-        setStatus(payload?.message || "Message sent successfully.");
+        setStatus({ text: payload?.message || "Message sent successfully.", type: "success" });
         setFormData({ name: "", email: "", message: "" });
       } else if (response.status === 400) {
-        setStatus(payload?.error || "Please fill in the required fields.");
+        setStatus({ text: payload?.error || "Please fill in the required fields.", type: "error" });
       } else if (response.status === 503) {
         setServerState("waking");
-        setStatus(
-          payload?.error ||
-            "Server is waking up. Please try again in a few seconds."
-        );
+        setStatus({
+          text: payload?.error || "Server is waking up. Please try again in a few seconds.",
+          type: "warning"
+        });
       } else if (response.status >= 500) {
-        setStatus(payload?.error || "Server error. Please try again later.");
+        setStatus({ text: payload?.error || "Server error. Please try again later.", type: "error" });
       } else {
-        setStatus(payload?.error || "Request failed. Please try again.");
+        setStatus({ text: payload?.error || "Request failed. Please try again.", type: "error" });
       }
     } catch (err) {
       setServerState("down");
       if (err.name === "AbortError") {
-        setStatus("Server is taking longer than expected. Please try again shortly.");
+        setStatus({ text: "Server is taking longer than expected. Please try again shortly.", type: "warning" });
       } else if (err instanceof TypeError) {
-        setStatus("Unable to reach server. Check your connection and try again.");
+        setStatus({ text: "Unable to reach server. Check your connection and try again.", type: "error" });
       } else {
-        setStatus("Server error. Please try again.");
+        setStatus({ text: "Server error. Please try again.", type: "error" });
       }
     } finally {
       clearTimeout(timeoutId);
@@ -127,7 +139,9 @@ const Contact = () => {
     <div className="contact-section">
       <h1 className="contact-title">Let's Connect</h1>
       <p className="contact-description">
-        Open to full-time opportunities, freelance work, and exciting collaborations. If you have a role, project, or idea in mind, let's connect. Send me a message below or reach out on LinkedIn.
+        Open to full-time opportunities, freelance work, and exciting collaborations. If you have a role, project, or idea in mind, let's connect. Send me a message below or reach out on <a href="https://www.linkedin.com/in/yasvanth-kosuri-007722195" target="_blank" rel="noopener noreferrer">
+          LinkedIn <span className="arrow">↗</span>
+        </a>.
       </p>
 
       <form className="contact-form" onSubmit={handleSubmit}>
@@ -169,17 +183,9 @@ const Contact = () => {
           ></textarea>
         </div>
 
-        <button className="submit-btn" type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Sending..." : "Send Message"}
+        <button className={`submit-btn ${status.type || ""}`} type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Sending..." : status.type === "success" ? "Sent" : status.type === "error" ? "Error!" : "Send"}
         </button>
-
-        {status ? (
-          <p className="status-message">{status}</p>
-        ) : serverState === "checking" ? (
-          <p className="status-message">Checking server status...</p>
-        ) : serverState === "waking" ? (
-          <p className="status-message">Server is waking up. Please wait a moment.</p>
-        ) : null}
       </form>
     </div>
   );

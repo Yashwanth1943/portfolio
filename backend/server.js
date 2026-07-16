@@ -5,10 +5,15 @@ import cors from "cors";
 import dns from "dns";
 import fs from "fs/promises";
 import path from "path";
+import { fileURLToPath } from "url";
+import transporter from "./config/mail.js";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 dns.setDefaultResultOrder("ipv4first");
 
-dotenv.config();
+dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 const DB_RETRY_DELAY_MS = 5000;
@@ -196,40 +201,90 @@ app.post("/api/contact", async (req, res) => {
   const email = req.body?.email?.trim();
   const message = req.body?.message?.trim() || "";
 
+  console.log(`📨 Received contact request from: ${name} (${email})`);
+
   if (!name || !email) {
     return res.status(400).json({ error: "Name and email are required." });
   }
 
+  let savedData = null;
+  let savedInDb = false;
+
+  // 1. Try to save to MongoDB
   if (isDbReady()) {
     try {
-      const saved = await withTimeout(
+      savedData = await withTimeout(
         Contact.create({ name, email, message }),
         CONTACT_CREATE_TIMEOUT_MS,
         "Contact save"
       );
-
-      const duration = Date.now() - start;
-
-      return res.status(201).json({
-        message: "Form submitted successfully!",
-        saved,
-      });
-    } catch (error) {
-      console.error("MongoDB save failed, attempting fallback...", error);
+      savedInDb = true;
+      console.log("💾 Saved to MongoDB successfully!");
+    } catch (dbError) {
+      console.error("❌ MongoDB save failed, attempting fallback...", dbError);
     }
   } else {
+    console.log("⚠️ MongoDB is not ready, checking connection...");
     void connectToDb();
   }
 
+  // 2. Fallback save to file if DB save failed
+  if (!savedInDb) {
+    try {
+      savedData = await saveContactFallback({ name, email, message });
+      console.log("💾 Saved to submissions.json (fallback) successfully!");
+    } catch (fallbackError) {
+      console.error("❌ Fallback save failed:", fallbackError);
+    }
+  }
+
+  // 3. Try to send Email notification to owner
   try {
-    const saved = await saveContactFallback({ name, email, message });
-    const duration = Date.now() - start;
+    console.log("📧 Sending email notification to owner...");
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: process.env.EMAIL_USER,
+      subject: `New Portfolio Contact - ${name}`,
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+    console.log("✅ Notification email sent to owner! Message ID:", info.messageId);
+  } catch (emailError) {
+    console.error("❌ Failed to send notification email to owner:", emailError.message);
+  }
+
+  // 3b. Try to send auto-reply confirmation email to visitor
+  try {
+    console.log(`📧 Sending confirmation email to visitor: ${email}...`);
+    const info = await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Thank you for reaching out! - Yashwanth",
+      html: `
+        <h3>Hi ${name},</h3>
+        <p>Thank you for connecting! I have received your message and will get back to you as soon as possible.</p>
+        <br/>
+        <p>Best regards,</p>
+        <p><strong>Yashwanth</strong></p>
+      `,
+    });
+    console.log("✅ Confirmation email sent to visitor! Message ID:", info.messageId);
+  } catch (visitorEmailError) {
+    console.error("❌ Failed to send confirmation email to visitor:", visitorEmailError.message);
+  }
+
+  // 4. Return response
+  if (savedData) {
     return res.status(201).json({
       message: "Form submitted successfully!",
-      saved,
+      saved: savedData,
     });
-  } catch (fallbackError) {
-    console.error("All save attempts failed", fallbackError);
+  } else {
     return res.status(500).json({ error: "Failed to submit form" });
   }
 });
@@ -239,5 +294,7 @@ app.get("/", (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, "0.0.0.0", () => {
+  console.log(`✅ Server running on port ${PORT}`);
 });
