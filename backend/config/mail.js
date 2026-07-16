@@ -1,26 +1,25 @@
 import dns from "dns";
-dns.setDefaultResultOrder("ipv4first");
-
 import nodemailer from "nodemailer";
 import dotenv from "dotenv";
 
+dns.setDefaultResultOrder("ipv4first");
 dotenv.config();
 
 const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
-    family: 4, // Explicitly force IPv4 socket connection
+    family: 4,
     auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
     },
 });
 
-// Optional: Check SMTP connection when server starts
-transporter.verify((error, success) => {
+// Verify SMTP connection when server starts
+transporter.verify((error) => {
     if (error) {
-        console.log("❌ Mail configuration error:", error.message);
+        console.error("❌ Mail configuration error:", error);
     } else {
         console.log("✅ Mail server is ready");
     }
