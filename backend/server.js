@@ -26,6 +26,7 @@ const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://localhost:10000",
   "https://yashwanthkosuri.in",
+  "https://www.yashwanthkosuri.in",
   "https://portfolio-two-pi-ddymchiwqd.vercel.app"
 ]);
 
@@ -33,6 +34,7 @@ const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.has(origin)) return true;
   if (/^http:\/\/localhost:\d+$/.test(origin)) return true;
+  if (/^https:\/\/(?:www\.)?yashwanthkosuri\.in$/.test(origin)) return true;
   if (/^https:\/\/[a-zA-Z0-9.-]+\.vercel\.app$/.test(origin)) return true;
   if (/^https:\/\/[a-zA-Z0-9.-]+\.(?:on)?render\.com$/.test(origin)) return true;
   return false;
