@@ -33,8 +33,8 @@ const isAllowedOrigin = (origin) => {
   if (!origin) return true;
   if (allowedOrigins.has(origin)) return true;
   if (/^http:\/\/localhost:\d+$/.test(origin)) return true;
-  if (/^https:\/\/[a-zA-Z0-9-]+\.vercel\.app$/.test(origin)) return true;
-  if (/^https:\/\/[a-zA-Z0-9-]+\.(?:on)?render\.com$/.test(origin)) return true;
+  if (/^https:\/\/[a-zA-Z0-9.-]+\.vercel\.app$/.test(origin)) return true;
+  if (/^https:\/\/[a-zA-Z0-9.-]+\.(?:on)?render\.com$/.test(origin)) return true;
   return false;
 };
 
@@ -72,6 +72,7 @@ app.use(
       if (isAllowedOrigin(origin)) {
         callback(null, true);
       } else {
+        console.warn("CORS blocked request from origin:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
