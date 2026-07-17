@@ -18,23 +18,25 @@ const Achievements = lazy(() => import("./components/Achievements"));
 const Contact = lazy(() => import("./components/Contact"));
 const Footer = lazy(() => import("./components/Footer"));
 
-const BackgroundEffects = memo(() => (
+const BackgroundEffects = memo(({ showRays }) => (
   <>
-    <div className="app-side-rays" aria-hidden="true">
-      <SideRays
-        speed={1.6}
-        rayColor1="#a78bfa"
-        rayColor2="#38bdf8"
-        intensity={2}
-        spread={2.4}
-        origin="top-right"
-        tilt={-8}
-        saturation={1.5}
-        blend={0.6}
-        falloff={1.6}
-        opacity={0.75}
-      />
-    </div>
+    {showRays && (
+      <div className="app-side-rays" aria-hidden="true">
+        <SideRays
+          speed={1.6}
+          rayColor1="#a78bfa"
+          rayColor2="#38bdf8"
+          intensity={2}
+          spread={2.4}
+          origin="top-right"
+          tilt={-8}
+          saturation={1.5}
+          blend={0.6}
+          falloff={1.6}
+          opacity={0.75}
+        />
+      </div>
+    )}
     <div className="energy-glow blob-1" aria-hidden="true" />
     <div className="energy-glow blob-2" aria-hidden="true" />
     <div className="energy-glow blob-3" aria-hidden="true" />
@@ -147,7 +149,11 @@ const App = () => {
           onBrandTransitionComplete={handleBrandTransitionComplete}
         />
 
-        {!showSplash && <BackgroundEffects />}
+        {!showSplash && (
+          <BackgroundEffects
+            showRays={true}
+          />
+        )}
 
         {revealContent && (
           <div className="app-content-reveal">

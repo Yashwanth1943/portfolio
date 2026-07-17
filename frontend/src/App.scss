@@ -47,17 +47,15 @@ body::before {
   min-height: 100vh;
 }
 
-/* Global SideRays canvas — absolute positioned at top, pauses on scroll out of view */
+/* Global SideRays canvas — fixed full-viewport, above bg gradient, below UI */
 .app-side-rays {
-  position: absolute;
-  top: 0;
-  left: 0;
+  position: fixed;
+  inset: 0;
   width: 100vw;
-  height: 120vh;
+  height: 100vh;
   z-index: 0;          /* above body::before (-10) and energy glows (-1) */
   pointer-events: none;
   isolation: isolate;  /* own compositing layer */
-  overflow: hidden;
 }
 
 
