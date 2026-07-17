@@ -1,213 +1,173 @@
 import React, { useEffect, useRef, useState, useMemo, useCallback, memo } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import {
+  FaReact,
+  FaNodeJs,
+  FaPython,
+  FaHtml5,
+  FaCss3Alt,
+  FaBootstrap,
+  FaGitAlt,
+} from 'react-icons/fa';
+import {
+  SiJavascript,
+  SiMongodb,
+  SiSqlite,
+  SiExpress,
+  SiTailwindcss,
+} from 'react-icons/si';
 import './index.scss';
 
 gsap.registerPlugin(ScrollTrigger);
 
 const skillsList = [
-  { name: "React", category: "Frontend", desc: "A JavaScript library for building component-based user interfaces." },
-  { name: "JavaScript", category: "Languages", desc: "Lightweight, interpreted programming language for dynamic web interactivity." },
-  { name: "Node.js", category: "Backend", desc: "JavaScript runtime environment built on Chrome's V8 engine." },
-  { name: "Express", category: "Backend", desc: "Minimalist and flexible web application framework for Node.js backends." },
-  { name: "MongoDB", category: "Database", desc: "NoSQL document database storing application data in JSON-like format." },
-  { name: "SQLite", category: "Database", desc: "Self-contained, serverless, zero-configuration SQL database engine." },
-  { name: "Python", category: "Languages", desc: "Versatile, high-level programming language known for readability and clean syntax." },
-  { name: "HTML5", category: "Frontend", desc: "The core structure and markup language of the World Wide Web." },
-  { name: "CSS3", category: "Frontend", desc: "Cascading stylesheets used to create modern visual design and presentation." },
-  { name: "Bootstrap", category: "Frontend", desc: "Popular responsive CSS framework for mobile-first web designs." },
-  { name: "Tailwind CSS", category: "Frontend", desc: "Utility-first CSS framework for rapid and responsive UI layouts." },
-  { name: "Git", category: "Tools", desc: "Distributed version control system to track changes in source code." },
+  { name: "React", category: "Frontend", level: "Advanced", icon: <FaReact />, desc: "A JavaScript library for building component-based user interfaces." },
+  { name: "JavaScript", category: "Languages", level: "Advanced", icon: <SiJavascript />, desc: "Lightweight, interpreted programming language for dynamic web interactivity." },
+  { name: "Node.js", category: "Backend", level: "Advanced", icon: <FaNodeJs />, desc: "JavaScript runtime environment built on Chrome's V8 engine." },
+  { name: "Express", category: "Backend", level: "Advanced", icon: <SiExpress />, desc: "Minimalist and flexible web application framework for Node.js backends." },
+  { name: "MongoDB", category: "Database", level: "Intermediate", icon: <SiMongodb />, desc: "NoSQL document database storing application data in JSON-like format." },
+  { name: "SQLite", category: "Database", level: "Intermediate", icon: <SiSqlite />, desc: "Self-contained, serverless, zero-configuration SQL database engine." },
+  { name: "Python", category: "Languages", level: "Intermediate", icon: <FaPython />, desc: "Versatile, high-level programming language known for readability and clean syntax." },
+  { name: "HTML5", category: "Frontend", level: "Advanced", icon: <FaHtml5 />, desc: "The core structure and markup language of the World Wide Web." },
+  { name: "CSS3", category: "Frontend", level: "Advanced", icon: <FaCss3Alt />, desc: "Cascading stylesheets used to create modern visual design and presentation." },
+  { name: "Bootstrap", category: "Frontend", level: "Advanced", icon: <FaBootstrap />, desc: "Popular responsive CSS framework for mobile-first web designs." },
+  { name: "Tailwind CSS", category: "Frontend", level: "Advanced", icon: <SiTailwindcss />, desc: "Utility-first CSS framework for rapid and responsive UI layouts." },
+  { name: "Git", category: "Tools", level: "Advanced", icon: <FaGitAlt />, desc: "Distributed version control system to track changes in source code." },
 ];
 
 const categories = ["All", "Languages", "Frontend", "Backend", "Database", "Tools"];
 
-const SkillCard = memo(({
-  skill,
-  index,
-  cardStatus,
-  isMobile,
-  expandUp,
-  isHovered,
-  onMouseEnter,
-  onMouseLeave
-}) => {
+const categoryColors = {
+  Languages: {
+    color: "#f59e0b",
+    bg: "rgba(245, 158, 11, 0.08)",
+    border: "rgba(245, 158, 11, 0.22)",
+    shadow: "rgba(245, 158, 11, 0.15)",
+  },
+  Frontend: {
+    color: "#38bdf8",
+    bg: "rgba(56, 189, 248, 0.08)",
+    border: "rgba(56, 189, 248, 0.22)",
+    shadow: "rgba(56, 189, 248, 0.15)",
+  },
+  Backend: {
+    color: "#34d399",
+    bg: "rgba(52, 211, 153, 0.08)",
+    border: "rgba(52, 211, 153, 0.22)",
+    shadow: "rgba(52, 211, 153, 0.15)",
+  },
+  Database: {
+    color: "#fb7185",
+    bg: "rgba(251, 113, 133, 0.08)",
+    border: "rgba(251, 113, 133, 0.22)",
+    shadow: "rgba(251, 113, 133, 0.15)",
+  },
+  Tools: {
+    color: "#c084fc",
+    bg: "rgba(192, 132, 252, 0.08)",
+    border: "rgba(192, 132, 252, 0.22)",
+    shadow: "rgba(192, 132, 252, 0.15)",
+  },
+};
+
+const SkillCard = memo(({ skill, isExpanded, onClick, alwaysShowDesc }) => {
+  const colors = categoryColors[skill.category] || categoryColors.Tools;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const showDetails = alwaysShowDesc || isExpanded || isHovered;
+
+  const handleClick = () => {
+    if (!alwaysShowDesc) {
+      onClick(skill.id);
+    }
+  };
+
   return (
-    <div
-      className={`card-physics-wrapper ${cardStatus}`}
+    <motion.div
+      layout
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
+      whileHover={{ 
+        y: -6,
+        scale: 1.03,
+        borderColor: colors.color,
+        boxShadow: `0 12px 30px rgba(0, 0, 0, 0.5), 0 0 20px ${colors.shadow}, inset 0 1px 0 rgba(255, 255, 255, 0.08)`
+      }}
+      transition={{
+        layout: { type: "spring", stiffness: 200, damping: 20 },
+        scale: { duration: 0.2, ease: "easeOut" },
+        y: { duration: 0.2, ease: "easeOut" },
+        borderColor: { duration: 0.2 },
+        boxShadow: { duration: 0.2 }
+      }}
+      onClick={handleClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`skill-card-new ${showDetails ? 'expanded' : ''}`}
       style={{
-        position: "absolute",
-        left: `${skill.restingX}px`,
-        top: `${skill.restingY}px`,
-        width: isMobile ? 110 : 150,
-        height: isMobile ? 40 : 52,
-        pointerEvents: "none",
-        zIndex: cardStatus === "hovered" ? 10 : (cardStatus === "dimmed" ? 0 : 1),
-        willChange: "transform",
-        transformStyle: "preserve-3d",
-        backfaceVisibility: "hidden",
-        "--float-dur-y": `${skill.floatDurationY}s`,
-        "--float-dur-x": `${skill.floatDurationX}s`,
-        "--float-delay": `${-skill.floatDelay}s`, // Negative delay makes animations start immediately at different points!
+        "--accent-color": colors.color,
+        "--accent-bg": colors.bg,
+        "--accent-border": colors.border,
+        cursor: alwaysShowDesc ? "default" : "pointer"
       }}
     >
-      <motion.div
-        className={`floating-card ${cardStatus}`}
-        style={{
-          pointerEvents: "auto",
-        }}
-        animate={
-          cardStatus === "hovered"
-            ? {
-              y: expandUp ? (isMobile ? -119.3 : -142.7) : -6,
-              scale: 1.15,
-              rotate: 0,
-              opacity: 1,
-            }
-            : cardStatus === "dimmed"
-              ? {
-                y: 0,
-                scale: 0.96,
-                rotate: 0,
-                opacity: 0.5,
-              }
-              : cardStatus === "filtered"
-                ? {
-                  y: 0,
-                  scale: 0.85,
-                  rotate: 0,
-                  opacity: 0.12,
-                }
-                : {
-                  y: 0,
-                  x: 0,
-                  rotate: 0,
-                  scale: 1,
-                  opacity: 1,
-                }
-        }
-        transition={{
-          type: "spring",
-          stiffness: 150,
-          damping: 15,
-          mass: 0.8,
-        }}
-        onMouseEnter={() => onMouseEnter(index)}
-        onMouseLeave={onMouseLeave}
-      >
-        {/* Backglow element (blurred behind card) */}
-        <div className="card-ambient-glow" />
- 
-        {/* Masked gradient border */}
-        <div className="card-glow" />
- 
-        <div className="card-content">
-          {expandUp && (
-            <motion.div
-              className="card-details"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{
-                height: isHovered ? "auto" : 0,
-                opacity: isHovered ? 1 : 0
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 160,
-                damping: 18
-              }}
-            >
-              <p className="card-desc">{skill.desc}</p>
-              <div className="card-divider" />
-            </motion.div>
-          )}
- 
-          <h3 className="card-title">{skill.name}</h3>
- 
-          {!expandUp && (
-            <motion.div
-              className="card-details"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{
-                height: isHovered ? "auto" : 0,
-                opacity: isHovered ? 1 : 0
-              }}
-              transition={{
-                type: "spring",
-                stiffness: 160,
-                damping: 18
-              }}
-            >
-              <div className="card-divider" />
-              <p className="card-desc">{skill.desc}</p>
-            </motion.div>
-          )}
+      <div 
+        className="card-bg-glow" 
+        style={{ background: `radial-gradient(circle, ${colors.shadow} 0%, transparent 70%)` }} 
+      />
+
+      <div className="card-header-new">
+        <span className="card-icon-new" style={{ color: colors.color }}>
+          {skill.icon}
+        </span>
+        <div className="card-title-group">
+          <h3 className="card-name-new">{skill.name}</h3>
+          
+          <AnimatePresence initial={false}>
+            {showDetails && (
+              <motion.span 
+                initial={{ opacity: 0, height: 0, scale: 0.8 }}
+                animate={{ opacity: 1, height: "auto", scale: 1 }}
+                exit={{ opacity: 0, height: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                className="card-level-tag" 
+                style={{ 
+                  color: colors.color, 
+                  backgroundColor: colors.bg, 
+                  borderColor: colors.border 
+                }}
+              >
+                {skill.level}
+              </motion.span>
+            )}
+          </AnimatePresence>
         </div>
+      </div>
+      
+      <motion.div 
+        layout="position"
+        style={{ overflow: "hidden" }}
+        animate={{ height: showDetails ? "auto" : 0, opacity: showDetails ? 1 : 0 }}
+        initial={{ height: alwaysShowDesc ? "auto" : 0, opacity: alwaysShowDesc ? 1 : 0 }}
+        transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      >
+        <div className="card-divider-new" />
+        <p className="card-desc-new">{skill.desc}</p>
       </motion.div>
-    </div>
+    </motion.div>
   );
 });
 
 SkillCard.displayName = "SkillCard";
 
-const MobileSkillCard = memo(({
-  skill,
-  index,
-  isActive,
-  onTap
-}) => {
-  return (
-    <motion.div
-      className="mobile-skill-card-wrapper"
-      initial={{ opacity: 0, y: 25, scale: 0.96 }}
-      whileInView={{ opacity: 1, y: 0, scale: 1 }}
-      viewport={{ once: true, margin: "-30px" }}
-      transition={{
-        delay: (index % 2) * 0.08,
-        duration: 0.45,
-        ease: "easeOut"
-      }}
-    >
-      <div
-        className={`mobile-skill-card ${isActive ? 'active' : ''}`}
-        onClick={onTap}
-      >
-        <div className="card-ambient-glow" style={{ opacity: isActive ? 1 : 0 }} />
-        <div className="card-glow" style={{ opacity: isActive ? 1 : 0 }} />
-
-        <div className="mobile-card-content">
-          <h3 className="mobile-card-title">{skill.name}</h3>
-
-          <motion.div
-            className="mobile-card-details"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{
-              height: isActive ? "auto" : 0,
-              opacity: isActive ? 1 : 0
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 220,
-              damping: 22
-            }}
-          >
-            <div className="mobile-card-divider" />
-            <p className="mobile-card-desc">{skill.desc}</p>
-          </motion.div>
-        </div>
-      </div>
-    </motion.div>
-  );
-});
-
-MobileSkillCard.displayName = "MobileSkillCard";
-
 const Skills = () => {
   const [activeCategory, setActiveCategory] = useState("All");
-  const [hoveredId, setHoveredId] = useState(null);
-  const [activeMobileCardId, setActiveMobileCardId] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
   const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' ? window.innerWidth < 768 : false);
-  const [dimensions, setDimensions] = useState({ width: 1000, height: 500 });
+  const skillsRef = useRef(null);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -215,90 +175,21 @@ const Skills = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const skillsRef = useRef(null);
-  const containerRef = useRef(null);
-
-  // Monitor container sizing dynamically (only triggers re-renders on dimension updates)
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    const updateDimensions = () => {
-      const rect = container.getBoundingClientRect();
-      setDimensions({
-        width: rect.width || 1000,
-        height: rect.height || 500,
-      });
-    };
-
-    updateDimensions();
-    const ro = new ResizeObserver(updateDimensions);
-    ro.observe(container);
-
-    return () => ro.disconnect();
-  }, []);
-
-  // Reset expanded card state when filter category is changed
   const handleCategoryChange = useCallback((cat) => {
     setActiveCategory(cat);
-    setActiveMobileCardId(null);
+    setExpandedId(null);
   }, []);
 
-  // Compute fixed card resting coordinates once per size change (Desktop only)
-  const cards = useMemo(() => {
-    const { width, height } = dimensions;
-    const cardW = isMobile ? 110 : 150;
-    const cardH = isMobile ? 40 : 52;
-    const numCards = skillsList.length;
-    const centerX = width / 2;
-    const centerY = height / 2;
+  const handleCardClick = useCallback((id) => {
+    setExpandedId((prev) => (prev === id ? null : id));
+  }, []);
 
-    // Spread cards out in a ring relative to container dimensions
-    const radiusX = Math.max(50, centerX - cardW - 30);
-    const radiusY = Math.max(50, centerY - cardH - 30);
-
-    return skillsList.map((skill, index) => {
-      const angle = (index / numCards) * Math.PI * 2;
-      const rX = radiusX * (0.45 + (index % 3) * 0.15);
-      const rY = radiusY * (0.45 + (index % 3) * 0.15);
-
-      const restingX = centerX + Math.cos(angle) * rX - cardW / 2;
-      const restingY = centerY + Math.sin(angle) * rY - cardH / 2;
-
-      // Expand direction based on resting position near container bottom
-      const hoveredHeight = (isMobile ? 135 : 165) * 1.18;
-      const expandUp = restingY + hoveredHeight > height - 15;
-
-      // Unique deterministic delay and duration for the float animation
-      const floatDelay = (index * 0.47) % 3.0; // delay up to 3s
-      const floatDurationY = 6.0 + (index * 0.73) % 4.0; // Y duration 6s - 10s
-      const floatDurationX = 5.5 + (index * 0.91) % 3.5; // X duration 5.5s - 9s
-      const floatDurationRotate = 7.0 + (index * 0.57) % 3.0; // Rotate duration 7s - 10s
-      const floatDurationScale = 8.0 + (index * 0.83) % 4.0; // Scale duration 8s - 12s
-
-      return {
-        ...skill,
-        id: index,
-        restingX,
-        restingY,
-        expandUp,
-        floatDelay,
-        floatDurationY,
-        floatDurationX,
-        floatDurationRotate,
-        floatDurationScale,
-      };
-    });
-  }, [dimensions, isMobile]);
-
-  // Filter skills for mobile grid flow layout
-  const filteredMobileSkills = useMemo(() => {
-    return skillsList
-      .map((skill, index) => ({ ...skill, id: index }))
-      .filter((skill) => activeCategory === "All" || skill.category === activeCategory);
+  const filteredSkills = useMemo(() => {
+    return skillsList.filter(
+      (skill) => activeCategory === "All" || skill.category === activeCategory
+    );
   }, [activeCategory]);
 
-  // Scroll introduction animations via GSAP
   useEffect(() => {
     const section = skillsRef.current;
     if (!section) return;
@@ -325,12 +216,9 @@ const Skills = () => {
         ease: "power2.out"
       }, "-=0.4");
 
-      const showcase = section.querySelector(".skills-showcase-container");
-      const grid = section.querySelector(".skills-mobile-grid");
-      const targetElement = showcase || grid;
-
-      if (targetElement) {
-        tl.from(targetElement, {
+      const grid = section.querySelector(".skills-grid");
+      if (grid) {
+        tl.from(grid, {
           opacity: 0,
           scale: 0.96,
           duration: 0.9,
@@ -340,28 +228,7 @@ const Skills = () => {
     }, skillsRef);
 
     return () => ctx.revert();
-  }, [isMobile]);
-
-  // Callback handlers memoized to avoid triggering re-renders on sibling components
-  const handleMouseEnter = useCallback((id) => {
-    setHoveredId(id);
   }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setHoveredId(null);
-  }, []);
-
-  const handleMobileCardTap = useCallback((id) => {
-    setActiveMobileCardId((prev) => (prev === id ? null : id));
-  }, []);
-
-  const getCardStatus = useCallback((cardId, category) => {
-    const matchesFilter = activeCategory === "All" || category === activeCategory;
-    if (!matchesFilter) return "filtered";
-    if (hoveredId === cardId) return "hovered";
-    if (hoveredId !== null) return "dimmed";
-    return "active";
-  }, [activeCategory, hoveredId]);
 
   return (
     <div className="skills-container" ref={skillsRef}>
@@ -379,42 +246,22 @@ const Skills = () => {
         ))}
       </div>
 
-      {isMobile ? (
-        <div className="skills-mobile-grid">
-          {filteredMobileSkills.map((skill, index) => (
-            <MobileSkillCard
+      <motion.div 
+        className="skills-grid"
+        layout
+      >
+        <AnimatePresence mode="popLayout">
+          {filteredSkills.map((skill) => (
+            <SkillCard
               key={skill.name}
               skill={skill}
-              index={index}
-              isActive={activeMobileCardId === skill.id}
-              onTap={() => handleMobileCardTap(skill.id)}
+              isExpanded={expandedId === skill.id}
+              onClick={handleCardClick}
+              alwaysShowDesc={!isMobile}
             />
           ))}
-        </div>
-      ) : (
-        <div
-          className="skills-showcase-container"
-          ref={containerRef}
-        >
-          {cards.map((card, index) => {
-            const cardStatus = getCardStatus(card.id, card.category);
-
-            return (
-              <SkillCard
-                key={card.name}
-                skill={card}
-                index={index}
-                cardStatus={cardStatus}
-                isMobile={false}
-                expandUp={card.expandUp}
-                isHovered={hoveredId === card.id}
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              />
-            );
-          })}
-        </div>
-      )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };

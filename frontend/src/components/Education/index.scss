@@ -1,9 +1,13 @@
 .education-container {
-  padding: 0;
+  padding: 0 24px;
   max-width: 900px;
   margin: 0 auto;
   text-align: center;
   color: #fff;
+
+  @media (max-width: 480px) {
+    padding: 0 16px;
+  }
 }
 
 .education-title {
@@ -166,7 +170,7 @@
   margin: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .timeline::after {
     left: 18px;
   }

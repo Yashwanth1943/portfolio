@@ -42,6 +42,11 @@ const BRAND_TRANSITION = {
   mass: 0.9,
 };
 
+const HERO_SCROLL_TRANSITION = {
+  duration: 0.45,
+  ease: [0.16, 1, 0.3, 1],
+};
+
 /*
  * All variant objects are MODULE-LEVEL constants.
  * Defining them inside the component creates new object references
@@ -144,6 +149,42 @@ const Header = ({
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isHeroVisible, setIsHeroVisible] = useState(true);
+
+  /* Observer to check if Hero section is visible */
+  useEffect(() => {
+    if (!revealContent) return undefined;
+
+    let observer;
+    let rafId;
+
+    const setupObserver = () => {
+      const heroElement = document.getElementById("hero");
+      if (!heroElement) {
+        rafId = requestAnimationFrame(setupObserver);
+        return;
+      }
+
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsHeroVisible(entry.isIntersecting);
+        },
+        {
+          root: null,
+          threshold: 0,
+          rootMargin: "-80px 0px 0px 0px",
+        }
+      );
+      observer.observe(heroElement);
+    };
+
+    setupObserver();
+
+    return () => {
+      if (observer) observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [revealContent]);
 
   /* handlers */
   const toggleMobileMenu = useCallback(() => {
@@ -271,22 +312,45 @@ const Header = ({
                   {revealContent && (
                     <motion.img
                       initial={{ opacity: 0, width: 0, marginRight: 0 }}
-                      animate={{ opacity: 1, width: 28, marginRight: 8 }}
-                      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                      animate={{
+                        opacity: 1,
+                        width: 28,
+                        marginRight: isHeroVisible ? 8 : 0,
+                      }}
+                      transition={HERO_SCROLL_TRANSITION}
                       src={import.meta.env.BASE_URL + "yashwanth logo.png"}
                       alt="Yashwanth Logo"
                       className="brand-logo"
                     />
                   )}
                 </AnimatePresence>
+                
                 <motion.span
                   className="brand-badge-text"
                   layoutId="portfolio-brand-name"
-                  layout="position"
                   transition={{ layout: BRAND_TRANSITION }}
                   onLayoutAnimationComplete={onBrandTransitionComplete}
                 >
-                  YASHWANTH
+                  {!revealContent ? (
+                    "YASHWANTH"
+                  ) : (
+                    <motion.span
+                      animate={{
+                        opacity: isHeroVisible ? 1 : 0,
+                        x: isHeroVisible ? 0 : -8,
+                        width: isHeroVisible ? "auto" : 0,
+                      }}
+                      transition={HERO_SCROLL_TRANSITION}
+                      style={{
+                        display: "inline-block",
+                        overflow: "hidden",
+                        whiteSpace: "nowrap",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      YASHWANTH
+                    </motion.span>
+                  )}
                 </motion.span>
               </>
             )}
