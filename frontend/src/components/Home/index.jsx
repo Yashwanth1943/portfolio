@@ -1,7 +1,6 @@
 import React, { useLayoutEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { NavLink } from 'react-router-dom';
 import ProfileCard from "./ProfileCard";
 import './index.scss';
 
@@ -62,14 +61,14 @@ const HomePage = () => {
               </ul>
 
               <div className="hero-buttons">
-                <NavLink className="btn btn-primary" to="/contact" onClick={(e) => {
+                <a className="btn btn-primary" href="#contact" onClick={(e) => {
                   e.preventDefault();
                   document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-                }}>Get in Touch</NavLink>
-                <NavLink className="btn btn-secondary" to="/projects" onClick={(e) => {
+                }}>Get in Touch</a>
+                <a className="btn btn-secondary" href="#projects" onClick={(e) => {
                   e.preventDefault();
                   document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
-                }}>View My Work</NavLink>
+                }}>View My Work</a>
               </div>
             </div>
 
@@ -101,6 +100,5 @@ const HomePage = () => {
     </div>
   );
 };
-
 
 export default HomePage;
