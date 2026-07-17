@@ -7,13 +7,13 @@ const achievementsData = [
   {
     title: "Skyscanner Software Engineering Simulation",
     issuer: "Skyscanner",
-    description: "Completed tasks covering system architecture design Microservices structures and micro frontend building blocks.",
+    description: "Completed tasks covering system architecture design, Microservices structures, and micro frontend building blocks.",
     type: "simulation"
   },
   {
     title: "Deloitte Data Analytics Simulation",
     issuer: "Deloitte",
-    description: "Prepared analytical models, customized dashboard displays, and derived strategic business insights.",
+    description: "Prepared analytical models, customized dashboard displays, and strategic business insights.",
     type: "simulation"
   },
   {
@@ -40,18 +40,18 @@ const containerVariants = {
   hidden: {},
   visible: {
     transition: {
-      staggerChildren: 0.12
+      staggerChildren: 0.08
     }
   }
 };
 
-const cardVariants = {
-  hidden: { opacity: 0, y: 35 },
+const itemVariants = {
+  hidden: { opacity: 0, x: -20 },
   visible: {
     opacity: 1,
-    y: 0,
+    x: 0,
     transition: {
-      duration: 0.6,
+      duration: 0.5,
       ease: [0.16, 1, 0.3, 1]
     }
   }
@@ -61,39 +61,42 @@ const Achievements = () => {
   return (
     <div className="achievements-container">
       <h1 className="achievements-title">Achievements</h1>
+      
       <motion.div 
-        className="achievements-grid"
+        className="achievements-highlight-list"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
       >
-        {achievementsData.map((item, index) => (
-          <motion.div 
-            key={index} 
-            variants={cardVariants}
-            className="achievement-card"
-            whileHover={{ y: -8 }}
-            transition={{ type: "spring", stiffness: 280, damping: 22 }}
-          >
-            <span className="achievement-watermark">{`0${index + 1}`}</span>
-
-            <div className="achievement-card-header">
-              <span className="achievement-badge">{item.issuer}</span>
-              <span className="achievement-icon-wrapper">
-                {item.type === 'simulation' ? (
-                  <FiAward className="achievement-icon" />
-                ) : (
-                  <FiBookOpen className="achievement-icon" />
-                )}
-              </span>
-            </div>
-
-            <h2 className="achievement-card-title">{item.title}</h2>
-            <p className="achievement-card-desc">{item.description}</p>
-            <div className="achievement-glow-bar" />
-          </motion.div>
-        ))}
+        {achievementsData.map((item, index) => {
+          const isSkyscanner = index === 0;
+          return (
+            <motion.div 
+              key={index} 
+              variants={itemVariants}
+              className={`achievement-highlight-item ${isSkyscanner ? 'featured-achievement' : ''}`}
+            >
+              <div className="achievement-stat-number">
+                {`0${index + 1}`}
+              </div>
+              
+              <div className="achievement-details">
+                <div className="achievement-header-info">
+                  <span className="achievement-tag-issuer">{item.issuer}</span>
+                  <span className="achievement-badge-type">
+                    <span className="type-icon">
+                      {item.type === 'simulation' ? <FiAward /> : <FiBookOpen />}
+                    </span>
+                    {item.type}
+                  </span>
+                </div>
+                <h2 className="achievement-title-text">{item.title}</h2>
+                <p className="achievement-desc-text">{item.description}</p>
+              </div>
+            </motion.div>
+          );
+        })}
       </motion.div>
     </div>
   );

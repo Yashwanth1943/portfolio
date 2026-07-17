@@ -161,7 +161,7 @@ const ProfileCardComponent = ({
       if (event.pointerType !== "mouse") return;
       const shell = shellRef.current;
       if (!shell || !tiltEngine) return;
-      
+
       let rect = rectRef.current;
       if (!rect) {
         rect = shell.getBoundingClientRect();
@@ -189,7 +189,7 @@ const ProfileCardComponent = ({
 
       const rect = shell.getBoundingClientRect();
       rectRef.current = rect;
-      
+
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
       tiltEngine.setTarget(x, y);
@@ -270,7 +270,7 @@ const ProfileCardComponent = ({
               window.addEventListener("deviceorientation", deviceOrientationHandler, { passive: true });
             }
           })
-          .catch(() => {});
+          .catch(() => { });
       } else {
         window.addEventListener("deviceorientation", deviceOrientationHandler, { passive: true });
       }

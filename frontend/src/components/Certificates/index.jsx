@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, memo, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { FiAward, FiEye } from "react-icons/fi";
 import "./index.scss";
 
 const withPublicUrl = (src) => {
@@ -17,103 +18,66 @@ const certificatesData = [
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1773319718/Skyscanner_Certificate_page-0001_xufd2r.jpg",
     title: "Skyscanner Software Engineering Job Simulation Certificate",
+    issuer: "Skyscanner",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1773246485/Deloitte_Data_Analytics_Certification_hirxt8.jpg",
     title: "Deloitte Data Analytics Certification",
+    issuer: "Deloitte",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1755440615/IMFKDOAF37_page-0001_xrrfqt.jpg",
     title: "Industry Ready Certificate",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752753757/Python_Cirtificate_hmxhfy.png",
-    title: "Python",
+    title: "Python Programming",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752753975/SQL_Cirtificate_tjaxgp.png",
-    title: "SQLITE",
+    title: "SQLITE Database Administration",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752754104/React_Js_Cirtificate_is6fel.png",
-    title: "React JS",
+    title: "React JS Frontend Web Development",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752754049/Node_Js_Cirtificate_iondqz.png",
-    title: "Node JS",
+    title: "Node JS Backend Web Development",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752753055/Build_your_own_static_website_Cirtificate_mazv9e.png",
-    title: "Build Your Own Static Website - Html, Css, Bootstrap",
+    title: "Build Your Own Static Website (HTML, CSS, Bootstrap)",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752753737/Build_your_responsive_website_t3n5qd.png",
     title: "Build Your Own Responsive Website",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752754016/JavaScript_Cirtificate_j4hhqu.png",
     title: "JavaScript Essentials",
+    issuer: "NXT Wave",
   },
   {
     src: "https://res.cloudinary.com/dn27v5rhi/image/upload/v1752754034/Flexbox_Cirtificate_gafzx1.png",
-    title: "Responsive Web Design Using Flexbox",
+    title: "Responsive Web Design Using Flexbox Layouts",
+    issuer: "NXT Wave",
   },
 ];
-
-const CertificateCard = memo(({ cert, handleCertificateClick }) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const resolvedSrc = withPublicUrl(cert.src);
-
-  return (
-    <div className="certificate-banner">
-      {!isLoaded && cert.type !== "pdf" && (
-        <div className="skeleton-loader"></div>
-      )}
-
-      {cert.type === "pdf" ? (
-        <button
-          type="button"
-          className="certificate-pdf"
-          onClick={() => handleCertificateClick(cert, resolvedSrc)}
-        >
-          Open PDF Certificate
-        </button>
-      ) : (
-        <img
-          src={resolvedSrc}
-          alt={cert.title}
-          className={`certificate-img ${isLoaded ? "visible" : "hidden"}`}
-          onLoad={() => setIsLoaded(true)}
-          onClick={() => handleCertificateClick(cert, resolvedSrc)}
-          loading="lazy"
-        />
-      )}
-      <div className="certificate-info">
-        <h3>{cert.title}</h3>
-      </div>
-    </div>
-  );
-});
-
-CertificateCard.displayName = "CertificateCard";
-
-const getCircularDiff = (index, currentIndex, N) => {
-  let diff = index - currentIndex;
-  while (diff < -N / 2) diff += N;
-  while (diff > N / 2) diff -= N;
-  return diff;
-};
 
 const Certificates = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedCertIndex, setSelectedCertIndex] = useState(null);
-  const [currentIndex, setCurrentIndex] = useState(1); // Start at 1 for symmetrical layout
-  const [hasEntered, setHasEntered] = useState(false);
   const [zoomScale, setZoomScale] = useState(1);
   const [isViewerImageLoaded, setIsViewerImageLoaded] = useState(false);
-  const [windowWidth, setWindowWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
-  );
+  const [showAll, setShowAll] = useState(false);
 
   useEffect(() => {
     setIsViewerImageLoaded(false);
@@ -125,15 +89,8 @@ const Certificates = () => {
 
   const N = certificatesData.length;
 
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const handleCertificateClick = (cert) => {
-    const idx = certificatesData.findIndex((c) => c.src === cert.src);
-    setSelectedCertIndex(idx !== -1 ? idx : 0);
+  const handleCertificateClick = (index) => {
+    setSelectedCertIndex(index);
     setIsModalOpen(true);
   };
 
@@ -142,22 +99,6 @@ const Certificates = () => {
     setSelectedCertIndex(null);
     setZoomScale(1);
   };
-
-  // Match responsive card widths from index.scss
-  const getCardWidth = () => {
-    if (windowWidth > 1024) return 380;
-    if (windowWidth > 768) return 320;
-    return 260;
-  };
-  const cardWidth = getCardWidth();
-
-  const handlePrev = useCallback(() => {
-    setCurrentIndex((prev) => prev - 1);
-  }, []);
-
-  const handleNext = useCallback(() => {
-    setCurrentIndex((prev) => prev + 1);
-  }, []);
 
   const handlePrevCert = useCallback(() => {
     setSelectedCertIndex((prev) => (prev - 1 + N) % N);
@@ -168,25 +109,6 @@ const Certificates = () => {
     setSelectedCertIndex((prev) => (prev + 1) % N);
     setZoomScale(1);
   }, [N]);
-
-  const handleDotClick = useCallback((idx) => {
-    setCurrentIndex((prev) => {
-      const currentActiveDot = ((prev % N) + N) % N;
-      let diff = idx - currentActiveDot;
-      if (diff < -N / 2) diff += N;
-      if (diff > N / 2) diff -= N;
-      return prev + diff;
-    });
-  }, [N]);
-
-  const handleDragEnd = useCallback((event, info) => {
-    const swipeThreshold = 50;
-    if (info.offset.x < -swipeThreshold) {
-      setCurrentIndex((prev) => prev + 1);
-    } else if (info.offset.x > swipeThreshold) {
-      setCurrentIndex((prev) => prev - 1);
-    }
-  }, []);
 
   // Preload adjacent images
   useEffect(() => {
@@ -277,7 +199,7 @@ const Certificates = () => {
   const handleTouchEnd = (e) => {
     touchDistanceRef.current = 0;
     if (e.changedTouches.length === 1 && e.touches.length === 0) {
-      if (zoomScale > 1) return; // Allow dragging to pan when zoomed
+      if (zoomScale > 1) return;
       const diff = touchStart.current - e.changedTouches[0].clientX;
       if (Math.abs(diff) > 60) {
         if (diff > 0) {
@@ -289,146 +211,58 @@ const Certificates = () => {
     }
   };
 
-  const activeDotIndex = ((currentIndex % N) + N) % N;
+  const visibleCertificates = showAll ? certificatesData : certificatesData.slice(0, 5);
 
   return (
     <>
       <section className="certificate-section">
         <h1 className="certificate-heading">Certificates</h1>
 
-        <div className="certificate-carousel-wrapper">
-          <button
-            className="carousel-btn prev"
-            onClick={handlePrev}
-            aria-label="Previous Certificate"
-          >
-            &#8249;
-          </button>
+        <div className="certificates-timeline-container">
+          <div className="certificates-timeline-line" />
+          
+          <div className="certificates-list-flow">
+            {visibleCertificates.map((cert, index) => (
+              <motion.div
+                key={index}
+                className="certificate-timeline-row"
+                initial={{ opacity: 0, x: -15 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.08 }}
+                onClick={() => handleCertificateClick(index)}
+              >
+                <div className="timeline-node">
+                  <div className="node-dot" />
+                  <span className="node-index">{(index + 1).toString().padStart(2, "0")}</span>
+                </div>
+                
+                <div className="certificate-row-content">
+                  <div className="cert-meta">
+                    <span className="cert-issuer">{cert.issuer}</span>
+                    <span className="cert-award-icon"><FiAward /></span>
+                  </div>
+                  <h3 className="cert-row-title">{cert.title}</h3>
+                </div>
 
-          <div className="certificate-carousel-viewport">
-            {certificatesData.map((cert, index) => {
-              const diff = getCircularDiff(index, currentIndex, N);
-              const absDiff = Math.abs(diff);
-
-              // Lazy render offscreen cards to optimize performance
-              if (absDiff > 1 && hasEntered) {
-                return null;
-              }
-
-              // Stagger indices for entrance animations (visible cards only)
-              let visibleIndex = 0;
-              if (diff === -1) visibleIndex = 0;
-              if (diff === 0) visibleIndex = 1;
-              if (diff === 1) visibleIndex = 2;
-
-              let x = 0;
-              let scale = 1;
-              let opacity = 1;
-              let filter = "blur(0px)";
-              let zIndex = 10 - absDiff;
-
-              if (diff === 0) {
-                x = 0;
-                scale = 1;
-                opacity = 1;
-                filter = "blur(0px)";
-                zIndex = 10;
-              } else if (diff === -1) {
-                x = -cardWidth * 0.75; // 25% overlap
-                scale = 0.90;
-                opacity = 0.75;
-                filter = "blur(1.5px)";
-                zIndex = 8;
-              } else if (diff === 1) {
-                x = cardWidth * 0.75; // 25% overlap
-                scale = 0.90;
-                opacity = 0.75;
-                filter = "blur(1.5px)";
-                zIndex = 8;
-              }
-
-              return (
-                <motion.div
-                  key={index}
-                  className="certificate-card-wrapper"
-                  initial={{ opacity: 0, y: 60 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-100px" }}
-                  transition={
-                    !hasEntered
-                      ? {
-                        delay: visibleIndex * 0.15,
-                        duration: 0.8,
-                        type: "spring",
-                        stiffness: 100,
-                        damping: 18,
-                      }
-                      : {
-                        type: "spring",
-                        stiffness: 260,
-                        damping: 26,
-                        mass: 0.8,
-                      }
-                  }
-                  animate={
-                    hasEntered
-                      ? {
-                        x,
-                        scale,
-                        opacity,
-                        filter,
-                        zIndex,
-                      }
-                      : undefined
-                  }
-                  onAnimationComplete={() => {
-                    if (!hasEntered) {
-                      setHasEntered(true);
-                    }
-                  }}
-                  // Custom swipe handling
-                  drag={diff === 0 ? "x" : false}
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={0.2}
-                  onDragEnd={handleDragEnd}
-                  // Interactive hover state only on active card
-                  whileHover={
-                    diff === 0
-                      ? {
-                        scale: 1.02,
-                        y: -6,
-                        transition: { duration: 0.3, ease: "easeOut" },
-                      }
-                      : undefined
-                  }
-                >
-                  <CertificateCard
-                    cert={cert}
-                    handleCertificateClick={handleCertificateClick}
-                  />
-                </motion.div>
-              );
-            })}
+                <div className="certificate-row-action">
+                  <button className="cert-row-btn" aria-label="Open viewer">
+                    <FiEye className="btn-icon" />
+                    <span>View</span>
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </div>
 
-          <button
-            className="carousel-btn next"
-            onClick={handleNext}
-            aria-label="Next Certificate"
-          >
-            &#8250;
-          </button>
-        </div>
-
-        <div className="carousel-dots">
-          {certificatesData.map((_, idx) => (
-            <button
-              key={idx}
-              className={`carousel-dot ${activeDotIndex === idx ? "active" : ""}`}
-              onClick={() => handleDotClick(idx)}
-              aria-label={`Go to slide ${idx + 1}`}
-            />
-          ))}
+          <div className="certificates-toggle-row">
+            <button 
+              className="certificates-toggle-btn"
+              onClick={() => setShowAll(!showAll)}
+            >
+              {showAll ? "Show Less" : "View All Certificates"}
+            </button>
+          </div>
         </div>
       </section>
 

@@ -226,7 +226,7 @@ section[id] {
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce), (max-width: 768px) {
   .blob-1,
   .blob-2,
   .blob-3 {

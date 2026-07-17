@@ -1,14 +1,18 @@
 .achievements-container {
   padding: 0;
-  max-width: 1120px;
+  max-width: 900px;
   margin: 0 auto;
   text-align: center;
   color: #fff;
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
 }
 
 .achievements-title {
   font-size: clamp(1.75rem, 3.8vw, 2.25rem);
-  margin-bottom: 50px;
+  margin-bottom: 40px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   background: linear-gradient(270deg, #a78bfa, #38bdf8, #c084fc);
@@ -20,156 +24,149 @@
 
   @media (max-width: 480px) {
     font-size: 1.9rem;
+    margin-bottom: 24px;
   }
 }
 
-.achievements-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 24px;
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
-.achievement-card {
-  position: relative;
-  background: rgba(255, 255, 255, 0.015);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 24px;
-  text-align: left;
-  box-shadow: 
-    0 12px 30px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.02);
+/* ─── Highlights List ─── */
+.achievements-highlight-list {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.achievement-highlight-item {
+  display: flex;
+  gap: 36px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
+  box-sizing: border-box;
   align-items: flex-start;
-  overflow: hidden;
-  transition: 
-    border-color 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-    box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: border-color 0.25s ease;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.035);
-    border-color: rgba(255, 255, 255, 0.18);
-    box-shadow: 
-      0 20px 40px rgba(0, 0, 0, 0.55),
-      0 0 25px rgba(167, 139, 250, 0.12),
-      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    border-color: rgba(255, 255, 255, 0.15);
 
-    .achievement-icon-wrapper {
-      color: var(--active-color, #c084fc);
-      border-color: rgba(167, 139, 250, 0.3);
-      background: rgba(167, 139, 250, 0.08);
-      box-shadow: 0 0 12px rgba(167, 139, 250, 0.2);
-    }
-
-    .achievement-watermark {
-      opacity: 0.14;
+    .achievement-stat-number {
+      opacity: 0.18;
       transform: scale(1.05);
     }
+  }
 
-    .achievement-glow-bar {
-      opacity: 0.85;
-      width: 100%;
-    }
+  @media (max-width: 600px) {
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px 0;
   }
 }
 
-.achievement-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: 16px;
-  position: relative;
-  z-index: 2;
+/* Featured item highlights */
+.featured-achievement {
+  border-bottom-color: rgba(167, 139, 250, 0.2);
+
+  .achievement-title-text {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .achievement-desc-text {
+    font-size: 0.9rem;
+    color: #e2e8f0;
+    line-height: 1.6;
+  }
+
+  &:hover {
+    border-color: rgba(167, 139, 250, 0.45);
+  }
 }
 
-.achievement-badge {
+/* Statistic Index Number Callout */
+.achievement-stat-number {
+  font-size: 2.2rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.15);
+  width: 60px;
+  flex-shrink: 0;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  user-select: none;
+  transition: all 0.25s ease;
+
+  .featured-achievement & {
+    -webkit-text-stroke: 1px rgba(167, 139, 250, 0.35);
+    font-size: 2.6rem;
+  }
+
+  @media (max-width: 600px) {
+    width: auto;
+  }
+}
+
+/* Details Box */
+.achievement-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.achievement-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.achievement-tag-issuer {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #a5b4fc;
-  background: rgba(167, 139, 250, 0.08);
-  border: 1px solid rgba(167, 139, 250, 0.18);
-  border-radius: 99px;
-  padding: 4px 10px;
+  text-transform: uppercase;
+  color: #a78bfa;
+  letter-spacing: 0.08em;
 }
 
-.achievement-icon-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.03);
+.achievement-badge-type {
+  font-size: 0.62rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #64748b;
   border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #94a3b8;
-  transition: 
-    color 0.4s ease, 
-    border-color 0.4s ease, 
-    background-color 0.4s ease, 
-    box-shadow 0.4s ease;
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 6px;
+  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+
+  .type-icon {
+    display: flex;
+    align-items: center;
+    font-size: 0.75rem;
+  }
 }
 
-.achievement-icon {
-  font-size: 0.95rem;
-}
-
-.achievement-card-title {
-  font-size: clamp(1.05rem, 1.4vw, 1.18rem);
+.achievement-title-text {
+  font-size: 1.02rem;
   font-weight: 700;
-  margin: 0 0 10px;
-  color: #fff;
-  line-height: 1.35;
-  position: relative;
-  z-index: 2;
-}
-
-.achievement-card-desc {
-  font-size: 0.84rem;
-  line-height: 1.6;
   color: #cbd5e1;
   margin: 0;
-  position: relative;
-  z-index: 2;
+  line-height: 1.4;
 }
 
-.achievement-watermark {
-  position: absolute;
-  right: 16px;
-  bottom: -4px;
-  font-size: 4.8rem;
-  font-weight: 800;
-  line-height: 1;
-  font-family: var(--font-sans), sans-serif;
-  pointer-events: none;
-  z-index: 1;
-  opacity: 0.06;
-  -webkit-text-stroke: 1px rgba(255, 255, 255, 0.4);
-  color: transparent;
-  transition: opacity 0.4s ease, transform 0.4s ease;
-  user-select: none;
-}
-
-.achievement-glow-bar {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0%;
-  height: 2px;
-  background: linear-gradient(
-    90deg, 
-    transparent 0%, 
-    var(--active-color, #c084fc) 50%, 
-    transparent 100%
-  );
-  opacity: 0;
-  transition: 
-    opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), 
-    width 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-  z-index: 2;
+.achievement-desc-text {
+  font-size: 0.84rem;
+  color: #94a3b8;
+  line-height: 1.55;
+  margin: 0;
 }

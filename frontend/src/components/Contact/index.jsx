@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { FiCheckCircle } from "react-icons/fi";
 import "./index.scss";
 
 const REQUEST_TIMEOUT_MS = 25000;
@@ -137,56 +138,77 @@ const Contact = () => {
 
   return (
     <div className="contact-section">
-      <h1 className="contact-title">Let's Connect</h1>
-      <p className="contact-description">
-        Open to full-time opportunities, freelance work, and exciting collaborations. If you have a role, project, or idea in mind, let's connect. Send me a message below or reach out on <a href="https://www.linkedin.com/in/yasvanth-kosuri-007722195" target="_blank" rel="noopener noreferrer">
-          LinkedIn <span className="arrow">↗</span>
-        </a>.
-      </p>
+      <div className="contact-layout">
 
-      <form className="contact-form" onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="contact-name">Your Name</label>
-          <input
-            id="contact-name"
-            type="text"
-            name="name"
-            placeholder="Enter your name..."
-            value={formData.name}
-            onChange={handleChange}
-            required
-          />
+        {/* Left Side Panel: Heading and Intro Summary */}
+        <div className="contact-info-panel">
+          <h1 className="contact-title">Let's Connect</h1>
+          <p className="contact-summary">
+            I'm always open to discussing new projects, full-time opportunities, creative collaborations, or designs. If you have an idea or role in mind, let's build something remarkable together.
+          </p>
+
+          <div className="contact-badge-status">
+            <span className="status-dot"></span>
+            Available for new opportunities
+          </div>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="contact-email">Your Email</label>
-          <input
-            id="contact-email"
-            type="email"
-            name="email"
-            placeholder="Enter your email..."
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+        {/* Right Side Panel: Contact Form (Cardless layout) */}
+        <div className="contact-form-container">
+          <form className="modern-contact-form" onSubmit={handleSubmit}>
+            <div className="form-group-modern">
+              <input
+                id="contact-name"
+                type="text"
+                name="name"
+                required
+                value={formData.name}
+                onChange={handleChange}
+                placeholder=" "
+              />
+              <label htmlFor="contact-name">Your Name</label>
+            </div>
+
+            <div className="form-group-modern">
+              <input
+                id="contact-email"
+                type="email"
+                name="email"
+                required
+                value={formData.email}
+                onChange={handleChange}
+                placeholder=" "
+              />
+              <label htmlFor="contact-email">Your Email</label>
+            </div>
+
+            <div className="form-group-modern">
+              <textarea
+                id="contact-message"
+                name="message"
+                rows="5"
+                required
+                value={formData.message}
+                onChange={handleChange}
+                placeholder=" "
+              ></textarea>
+              <label htmlFor="contact-message">Your Message</label>
+            </div>
+
+            <button className={`modern-submit-btn ${status.type || ""}`} type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Sending..." : status.type === "success" ? "Message Sent" : status.type === "error" ? "Error Sending" : "Send Message"}
+            </button>
+
+            {status.text && (
+              <div className={`form-status-alert ${status.type}`}>
+                {status.type === "success" && <FiCheckCircle className="alert-icon" />}
+                <span>{status.text}</span>
+              </div>
+            )}
+          </form>
         </div>
 
-        <div className="form-group">
-          <label htmlFor="contact-message">Your Message</label>
-          <textarea
-            id="contact-message"
-            name="message"
-            rows="4"
-            placeholder="Tell me how I can help..."
-            value={formData.message}
-            onChange={handleChange}
-          ></textarea>
-        </div>
-
-        <button className={`submit-btn ${status.type || ""}`} type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Sending..." : status.type === "success" ? "Sent" : status.type === "error" ? "Error!" : "Send"}
-        </button>
-      </form>
+      </div>
     </div>
   );
 };
