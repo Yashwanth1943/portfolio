@@ -6,14 +6,17 @@ import dns from "dns";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import transporter from "./config/mail.js";
+import { Resend } from "resend";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+dotenv.config({ path: path.join(__dirname, ".env") });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+
 dns.setDefaultResultOrder("ipv4first");
 
-dotenv.config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 const DB_RETRY_DELAY_MS = 5000;
@@ -248,15 +251,20 @@ app.post("/api/contact", async (req, res) => {
   try {
     console.log("📧 Sending email notification to owner...");
 
-    const info = await transporter.sendMail({
-      from: '"Yashwanth Portfolio" <yashwanthkosuri@gmail.com>',
-      to: process.env.EMAIL_USER,
+    const info = await resend.emails.send({
+      from: "Yashwanth Portfolio <contact@yashwanthkosuri.in>",
+      to: process.env.TO_EMAIL,
       subject: `📩 New Portfolio Contact - ${name}`,
+      replyTo: email,
       html: `
     <h2>New Portfolio Contact Form Submission</h2>
+
     <p><strong>Name:</strong> ${name}</p>
+
     <p><strong>Email:</strong> ${email}</p>
+
     <p><strong>Message:</strong></p>
+
     <p>${message}</p>
   `,
     });
@@ -272,12 +280,12 @@ app.post("/api/contact", async (req, res) => {
   try {
     console.log(`📧 Sending confirmation email to ${email}...`);
 
-    const info = await transporter.sendMail({
-      from: '"Yashwanth Portfolio" <yashwanthkosuri@gmail.com>',
+    const visitorInfo = await resend.emails.send({
+      from: "Yashwanth Portfolio <contact@yashwanthkosuri.in>",
       to: email,
       subject: "Thank you for reaching out! - Yashwanth",
       html: `
-    <h2>Hello ${name}, 👋</h2>
+    <h2>Hello ${name} 👋</h2>
 
     <p>Thank you for contacting me through my portfolio website.</p>
 
@@ -285,7 +293,7 @@ app.post("/api/contact", async (req, res) => {
 
     <br>
 
-    <strong>Your Message:</strong>
+    <strong>Your Message</strong>
 
     <div style="padding:15px;background:#f5f5f5;border-radius:8px;">
       ${message}
@@ -296,7 +304,6 @@ app.post("/api/contact", async (req, res) => {
     <p>Regards,</p>
 
     <h3>Yashwanth</h3>
-    <p>Full Stack Developer</p>
 
     <a href="https://yashwanthkosuri.in">
       yashwanthkosuri.in
@@ -304,7 +311,7 @@ app.post("/api/contact", async (req, res) => {
   `,
     });
 
-    console.log("✅ Visitor confirmation mail sent! Message ID:", info.messageId);
+    console.log("✅ Visitor confirmation mail sent!", visitorInfo.data?.id);
 
   } catch (error) {
     console.error("❌ Visitor mail failed:", error);
