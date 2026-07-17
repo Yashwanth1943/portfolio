@@ -3,6 +3,12 @@ import './index.scss';
 
 const educationData = [
   {
+    title: "Frontend Developer Intern",
+    institution: "Arah Infotech",
+    period: "2026 Jun",
+    description: "Worked as a Frontend Developer Intern, designing responsive user interfaces, modularizing components, and implementing clean styling patterns across web layouts."
+  },
+  {
     title: "BSc in Computer Science",
     institution: "Ravulapalem",
     period: "2021 - 2024",
@@ -51,7 +57,7 @@ const Education = () => {
 
   return (
     <div className="education-container">
-      <h1 className="education-title">Education</h1>
+      <h1 className="education-title">Education & Experience</h1>
       <div className="timeline">
         {educationData.map((item, index) => (
           <div

@@ -55,9 +55,9 @@ const HomePage = () => {
               </p>
 
               <ul className="hero-highlights" aria-label="Core strengths">
-                <li>Modern responsive UI</li>
-                <li>Scalable backend APIs</li>
-                <li>Performance-focused builds</li>
+                <li><span className="check-icon">✓</span> Modern responsive UI</li>
+                <li><span className="check-icon">✓</span> Scalable backend APIs</li>
+                <li><span className="check-icon">✓</span> Performance-focused builds</li>
               </ul>
 
               <div className="hero-buttons">

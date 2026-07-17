@@ -66,6 +66,30 @@
   line-height: 1.6;
   margin: 0 0 24px;
   font-weight: 400;
+
+  .contact-linkedin-link {
+    color: #a78bfa;
+    text-decoration: none;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    position: relative;
+    transition: color 0.25s ease;
+
+    .link-arrow {
+      font-size: 0.85rem;
+      transition: transform 0.25s ease;
+    }
+
+    &:hover {
+      color: #fff;
+
+      .link-arrow {
+        transform: translate(2px, -2px);
+      }
+    }
+  }
 }
 
 /* Availability Badge */
@@ -118,7 +142,7 @@
   margin-bottom: 24px;
   width: 100%;
 
-  input,
+    input,
   textarea {
     width: 100%;
     background: rgba(255, 255, 255, 0.015);
@@ -136,6 +160,14 @@
       border-color: rgba(255, 255, 255, 0.14);
       background: rgba(255, 255, 255, 0.025);
       box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.04);
+    }
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover, 
+    &:-webkit-autofill:focus {
+      -webkit-text-fill-color: #f8fafc !important;
+      -webkit-box-shadow: 0 0 0px 1000px #040310 inset !important;
+      transition: background-color 5000s ease-in-out 0s;
     }
   }
 

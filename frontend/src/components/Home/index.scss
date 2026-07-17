@@ -87,23 +87,32 @@
 }
 
 .hero-highlights {
-  margin: 8px 0 2px;
+  margin: 12px 0 4px;
   padding: 0;
   list-style: none;
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 16px;
   justify-content: center;
 }
 
 .hero-highlights li {
   font-size: clamp(0.74rem, 0.35vw + 0.68rem, 0.86rem);
-  color: #f1f5f9;
-  background: rgba(167, 139, 250, 0.08);
-  border: 1px solid rgba(167, 139, 250, 0.22);
-  border-radius: 999px;
-  padding: 5px 10px;
-  box-shadow: 0 4px 12px rgba(167, 139, 250, 0.05);
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+
+  .check-icon {
+    color: #c084fc;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(192, 132, 252, 0.3);
+  }
 }
 
 .hero-buttons {
@@ -254,9 +263,7 @@
     gap: 10px;
   }
 
-  .hero-highlights li {
-    padding: 8px 12px;
-  }
+
 
   .hero-buttons {
     margin-top: 12px;
@@ -304,8 +311,7 @@
   }
 
   .hero-highlights li {
-    font-size: 0.85rem;
-    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 }
 

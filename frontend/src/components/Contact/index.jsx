@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
+import { FiArrowUpRight } from "react-icons/fi";
 import "./index.scss";
 
 const REQUEST_TIMEOUT_MS = 25000;
@@ -144,7 +144,7 @@ const Contact = () => {
         <div className="contact-info-panel">
           <h1 className="contact-title">Let's Connect</h1>
           <p className="contact-summary">
-            I'm always open to discussing new projects, full-time opportunities, creative collaborations, or designs. If you have an idea or role in mind, let's build something remarkable together.
+            I'm currently open to full-time opportunities, freelance projects, and meaningful collaborations. If you have a role, project, or idea in mind, let's work together to create something impactful. Send me a message below or connect with me on <a href="https://www.linkedin.com/in/yasvanth-kosuri-007722195" target="_blank" rel="noopener noreferrer" className="contact-linkedin-link">LinkedIn <FiArrowUpRight className="link-arrow" /></a>.
           </p>
 
           <div className="contact-badge-status">
@@ -198,13 +198,6 @@ const Contact = () => {
             <button className={`modern-submit-btn ${status.type || ""}`} type="submit" disabled={isSubmitting}>
               {isSubmitting ? "Sending..." : status.type === "success" ? "Message Sent" : status.type === "error" ? "Error Sending" : "Send Message"}
             </button>
-
-            {status.text && (
-              <div className={`form-status-alert ${status.type}`}>
-                {status.type === "success" && <FiCheckCircle className="alert-icon" />}
-                <span>{status.text}</span>
-              </div>
-            )}
           </form>
         </div>
 

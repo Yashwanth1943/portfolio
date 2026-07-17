@@ -117,18 +117,17 @@
 .about-highlights-list {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 32px 24px;
+  gap: 24px 16px;
   width: 100%;
 
   @media (max-width: 480px) {
-    grid-template-columns: 1fr;
-    gap: 24px;
+    gap: 16px 12px;
   }
 }
 
 .about-highlight-item {
   border-top: 1px solid rgba(255, 255, 255, 0.07);
-  padding-top: 16px;
+  padding-top: 12px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -140,15 +139,19 @@
     color: #a78bfa;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    margin: 0 0 6px;
+    margin: 0 0 4px;
   }
 
   .item-value {
     font-size: 1.45rem;
     font-weight: 800;
     color: #f8fafc;
-    margin: 0 0 6px;
+    margin: 0 0 4px;
     letter-spacing: -0.02em;
+
+    @media (max-width: 480px) {
+      font-size: 1.15rem;
+    }
   }
 
   .item-desc {
@@ -156,5 +159,10 @@
     color: #94a3b8;
     line-height: 1.5;
     margin: 0;
+
+    @media (max-width: 480px) {
+      font-size: 0.76rem;
+      line-height: 1.4;
+    }
   }
 }

@@ -34,8 +34,8 @@ const About = () => {
             
             <div className="about-highlight-item">
               <span className="item-title">Experience</span>
-              <h3 className="item-value">Fresher / Builder</h3>
-              <p className="item-desc">Specialized in full-stack web architectures.</p>
+              <h3 className="item-value">Frontend Intern</h3>
+              <p className="item-desc">Worked as a Frontend Developer Intern at Arah Infotech.</p>
             </div>
 
             <div className="about-highlight-item">

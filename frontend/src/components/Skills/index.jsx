@@ -94,7 +94,8 @@ const Skills = () => {
     <div className="skills-container" ref={skillsRef}>
       <h1 className="skills-title">My Skills</h1>
 
-      <div className="skills-categories-layout">
+      {/* Desktop view (>= 768px) */}
+      <div className="skills-categories-layout skills-desktop-view">
         {Object.entries(groupedSkills).map(([category, items]) => {
           const accentColor = categoryColors[category] || "#a78bfa";
           return (
@@ -103,17 +104,45 @@ const Skills = () => {
                 <span className="category-line" style={{ backgroundColor: accentColor }} />
                 {category}
               </h2>
-              
+
               <div className="skills-pills-row">
                 {items.map((skill) => (
-                  <div 
-                    key={skill.name} 
+                  <div
+                    key={skill.name}
                     className="skill-pill"
                     style={{ "--accent-color": accentColor }}
                   >
                     <span className="pill-icon">{skill.icon}</span>
                     <span className="pill-name">{skill.name}</span>
                     <span className="pill-level">{skill.level}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Mobile view (< 768px) */}
+      <div className="skills-categories-layout skills-mobile-view">
+        {Object.entries(groupedSkills).map(([category, items]) => {
+          const accentColor = categoryColors[category] || "#a78bfa";
+          return (
+            <div key={category} className="skills-category-group">
+              <h2 className="category-heading" style={{ color: accentColor }}>
+                <span className="category-line" style={{ backgroundColor: accentColor }} />
+                {category}
+              </h2>
+
+              <div className="skills-mobile-grid">
+                {items.map((skill) => (
+                  <div
+                    key={skill.name}
+                    className="skill-mobile-pill"
+                    style={{ "--accent-color": accentColor }}
+                  >
+                    <span className="pill-icon">{skill.icon}</span>
+                    <span className="pill-name">{skill.name}</span>
                   </div>
                 ))}
               </div>
