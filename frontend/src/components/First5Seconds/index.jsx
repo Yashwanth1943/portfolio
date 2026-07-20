@@ -2,14 +2,17 @@ import { memo, useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { gsap } from "gsap";
 import "@fontsource/inter/400.css";
+import "@fontsource/inter/400-italic.css";
 import "@fontsource/inter/700.css";
+import "@fontsource/inter/700-italic.css";
 import "@fontsource/inter/900.css";
+import "@fontsource/inter/900-italic.css";
 import "@fontsource/pacifico";
 import "@fontsource/dancing-script/400.css";
 import "@fontsource/dancing-script/600.css";
+import "@fontsource/dancing-script/700.css";
 import "@fontsource/great-vibes";
 import "@fontsource/sacramento";
-import "@fontsource/petemoss";
 import "@fontsource/caveat/400.css";
 import "@fontsource/caveat/700.css";
 import "@fontsource/playfair-display/400.css";
@@ -17,6 +20,18 @@ import "@fontsource/playfair-display/400-italic.css";
 import "@fontsource/playfair-display/600.css";
 import "@fontsource/playfair-display/700.css";
 import "@fontsource/playfair-display/700-italic.css";
+import "@fontsource/allura";
+import "@fontsource/cormorant-garamond/700.css";
+import "@fontsource/lora/600-italic.css";
+import "@fontsource/merriweather/700.css";
+import "@fontsource/cinzel-decorative";
+import "@fontsource/bebas-neue";
+import "@fontsource/permanent-marker";
+import "@fontsource/amatic-sc/700.css";
+import "@fontsource/parisienne";
+import "@fontsource/marck-script";
+import "@fontsource/dm-serif-display";
+import "@fontsource/bonheur-royale";
 import "./index.scss";
 
 const EASE = [0.16, 1, 0.3, 1];
@@ -28,96 +43,120 @@ const BRAND_TRANSITION = {
 };
 
 const TYPOGRAPHY_STYLES = [
-  // Classic serif (available on Windows and most desktop systems)
   { fontFamily: "'Times New Roman', serif", fontWeight: "400", fontStyle: "normal" },
-
-  // Modern Sans
-  { fontFamily: "'Inter', 'Helvetica Neue', sans-serif", fontWeight: "900", fontStyle: "normal" },
-
-  // Brush Script (Web first)
-  { fontFamily: "'Pacifico', 'Brush Script MT', cursive", fontWeight: "400", fontStyle: "normal" },
-
-  // Formal calligraphy
+  { fontFamily: "'Pacifico', cursive", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Inter', sans-serif", fontWeight: "900", fontStyle: "normal" },
+  { fontFamily: "'Cormorant Garamond', serif", fontWeight: "700", fontStyle: "normal" },
   { fontFamily: "'Great Vibes', cursive", fontWeight: "400", fontStyle: "normal" },
-
-  // Light signature script
-  { fontFamily: "'Sacramento', cursive", fontWeight: "400", fontStyle: "normal" },
-
-  // Expressive handwritten script
-  { fontFamily: "'Petemoss', cursive", fontWeight: "400", fontStyle: "normal" },
-
-  // Display serif
-  { fontFamily: "'Playfair Display', serif", fontWeight: "400", fontStyle: "normal" },
-
-  // Handwritten italic
-  { fontFamily: "'Dancing Script', cursive", fontWeight: "400", fontStyle: "italic" },
-
-  // Handwritten
-  { fontFamily: "'Dancing Script', cursive", fontWeight: "600", fontStyle: "normal" },
-
-  // Casual handwriting
-  { fontFamily: "'Caveat', cursive", fontWeight: "700", fontStyle: "normal" },
-
-  // Segoe Script (Web first)
-  { fontFamily: "'Dancing Script', 'Segoe Script', cursive", fontWeight: "400", fontStyle: "normal" },
-
-  // Rounded sans
-  { fontFamily: "'Inter', sans-serif", fontWeight: "700", fontStyle: "normal" },
-
-  // Georgia
+  { fontFamily: "'Bebas Neue', sans-serif", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Playfair Display', serif", fontWeight: "700", fontStyle: "normal" },
+  { fontFamily: "'Allura', cursive", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Merriweather', serif", fontWeight: "700", fontStyle: "normal" },
+  { fontFamily: "'Permanent Marker', cursive", fontWeight: "400", fontStyle: "normal" },
   { fontFamily: "'Georgia', serif", fontWeight: "700", fontStyle: "italic" },
-
-  // Editorial serif
-  { fontFamily: "'Playfair Display', serif", fontWeight: "600", fontStyle: "normal" },
-
-  // Editorial serif italic
-  { fontFamily: "'Playfair Display', serif", fontWeight: "700", fontStyle: "italic" },
-
-  // High-contrast serif
-  { fontFamily: "'Playfair Display', serif", fontWeight: "400", fontStyle: "normal" },
-
-  // Geometric sans
-  { fontFamily: "'Inter', sans-serif", fontWeight: "700", fontStyle: "normal" },
-
-  // Geometric sans heavy
-  { fontFamily: "'Inter', sans-serif", fontWeight: "900", fontStyle: "italic" },
-
-  // Humanist sans
-  { fontFamily: "'Inter', sans-serif", fontWeight: "700", fontStyle: "italic" },
-
-  // Trebuchet
-  { fontFamily: "'Trebuchet MS', sans-serif", fontWeight: "700", fontStyle: "normal" },
-
-  // Verdana
-  { fontFamily: "'Verdana', sans-serif", fontWeight: "900", fontStyle: "italic" },
-
-  // Impact
-  { fontFamily: "'Impact', sans-serif", fontWeight: "900", fontStyle: "normal" },
-
-  // Decorative serif
-  { fontFamily: "'Playfair Display', serif", fontWeight: "700", fontStyle: "italic" },
-
-  // Papyrus
-  { fontFamily: "'Papyrus', fantasy", fontWeight: "400", fontStyle: "normal" },
-
-  // Brush + Bold Finish (Web first)
-  { fontFamily: "'Pacifico', 'Brush Script MT', cursive", fontWeight: "700", fontStyle: "italic" },
-
-  // Custom-style script replacement
-  { fontFamily: "'Dancing Script', cursive", fontWeight: "400", fontStyle: "normal" },
-
-  // Custom-style sans replacement
-  { fontFamily: "'Inter', sans-serif", fontWeight: "400", fontStyle: "italic" },
-
-  // Custom-style sans replacement
-  { fontFamily: "'Inter', sans-serif", fontWeight: "700", fontStyle: "normal" },
+  { fontFamily: "'Dancing Script', cursive", fontWeight: "700", fontStyle: "normal" },
+  { fontFamily: "'DM Serif Display', serif", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Amatic SC', cursive", fontWeight: "700", fontStyle: "normal" },
+  { fontFamily: "'Cinzel Decorative', serif", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Caveat', cursive", fontWeight: "700", fontStyle: "normal" },
+  { fontFamily: "'Lora', serif", fontWeight: "600", fontStyle: "italic" },
+  { fontFamily: "'Marck Script', cursive", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Sacramento', cursive", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Bonheur Royale', cursive", fontWeight: "400", fontStyle: "normal" },
+  { fontFamily: "'Parisienne', cursive", fontWeight: "400", fontStyle: "normal" },
 ];
 
 const First5Seconds = memo(({ onComplete }) => {
   const [step, setStep] = useState(0);
+  const [fontsReady, setFontsReady] = useState(false);
   const helloRef = useRef(null);
 
+  // 1. Programmatically load web fonts with a safety timeout fallback
   useEffect(() => {
+    const webFonts = [
+      // Inter
+      "400 16px 'Inter'",
+      "700 16px 'Inter'",
+      "900 16px 'Inter'",
+      "italic 400 16px 'Inter'",
+      "italic 700 16px 'Inter'",
+      "italic 900 16px 'Inter'",
+
+      // Pacifico
+      "400 16px 'Pacifico'",
+
+      // Great Vibes
+      "400 16px 'Great Vibes'",
+
+      // Sacramento
+      "400 16px 'Sacramento'",
+
+      // Playfair Display
+      "400 16px 'Playfair Display'",
+      "600 16px 'Playfair Display'",
+      "700 16px 'Playfair Display'",
+      "italic 400 16px 'Playfair Display'",
+      "italic 700 16px 'Playfair Display'",
+
+      // Dancing Script
+      "400 16px 'Dancing Script'",
+      "600 16px 'Dancing Script'",
+      "700 16px 'Dancing Script'",
+
+      // Caveat
+      "400 16px 'Caveat'",
+      "700 16px 'Caveat'",
+
+      // New Web Fonts
+      "400 16px 'Allura'",
+      "700 16px 'Cormorant Garamond'",
+      "italic 600 16px 'Lora'",
+      "700 16px 'Merriweather'",
+      "400 16px 'Cinzel Decorative'",
+      "400 16px 'Bebas Neue'",
+      "400 16px 'Permanent Marker'",
+      "700 16px 'Amatic SC'",
+      "400 16px 'Parisienne'",
+      "400 16px 'Marck Script'",
+      "400 16px 'DM Serif Display'",
+      "400 16px 'Bonheur Royale'",
+    ];
+
+    let active = true;
+
+    // Load each web font spec using the FontFaceSet API
+    const fontPromises = webFonts.map(spec =>
+      document.fonts.load(spec).catch(err => {
+        console.warn(`Font load failed or bypassed for: ${spec}`, err);
+        return [];
+      })
+    );
+
+    // Timeout fallback of 1200ms to make sure the app works even offline or on extremely slow networks
+    const safetyTimeout = window.setTimeout(() => {
+      if (active) {
+        console.warn("Font loading safety timeout reached. Proceeding with fallback fonts.");
+        setFontsReady(true);
+      }
+    }, 1200);
+
+    Promise.all(fontPromises).then(() => {
+      if (active) {
+        window.clearTimeout(safetyTimeout);
+        setFontsReady(true);
+      }
+    });
+
+    return () => {
+      active = false;
+      window.clearTimeout(safetyTimeout);
+    };
+  }, []);
+
+  // 2. Start steps timers once fonts are ready
+  useEffect(() => {
+    if (!fontsReady) return undefined;
+
     // 2.7s for typography sequence to finish, then reveal I'm YASHWANTH (step 1)
     const helloTimer = window.setTimeout(() => setStep(1), 2700);
     const taglineTimer = window.setTimeout(() => setStep(2), 3800);
@@ -128,22 +167,24 @@ const First5Seconds = memo(({ onComplete }) => {
       window.clearTimeout(taglineTimer);
       window.clearTimeout(completeTimer);
     };
-  }, [onComplete]);
+  }, [onComplete, fontsReady]);
 
-  // GSAP style-shifting timeline
+  // 3. GSAP style-shifting timeline (runs only when fonts are ready)
   useEffect(() => {
+    if (!fontsReady) return undefined;
+
     const helloEl = helloRef.current;
     if (!helloEl) return undefined;
 
     const tl = gsap.timeline();
 
-    // 1. Initial fade-in and slide-up entrance
+    // Initial fade-in and slide-up entrance
     tl.fromTo(helloEl,
       { opacity: 0, y: 15, filter: "blur(6px)", scale: 0.94 },
       { opacity: 1, y: 0, filter: "blur(0px)", scale: 1, duration: 0.4, ease: "power4.out" }
     );
 
-    // 2. Rapid typography shifting sequence
+    // Rapid typography shifting sequence
     TYPOGRAPHY_STYLES.forEach((style, index) => {
       const startTime = 0.4 + index * 0.10; // shift every 100ms
 
@@ -183,7 +224,7 @@ const First5Seconds = memo(({ onComplete }) => {
       }
     });
 
-    // 3. Smooth exit transition
+    // Smooth exit transition
     const exitTime = 0.4 + TYPOGRAPHY_STYLES.length * 0.10; // 2.40s
     tl.to(helloEl, {
       opacity: 0,
@@ -197,7 +238,7 @@ const First5Seconds = memo(({ onComplete }) => {
     return () => {
       tl.kill();
     };
-  }, []);
+  }, [fontsReady]);
 
   return (
     <motion.div
@@ -212,7 +253,6 @@ const First5Seconds = memo(({ onComplete }) => {
 
       {step === 0 && (
         <div className="splash-rings-container">
-
           <motion.div
             className="splash-ring ring-1"
             initial={{ scale: 0.1, opacity: 0.6 }}
@@ -287,6 +327,33 @@ const First5Seconds = memo(({ onComplete }) => {
             </motion.div>
           </div>
         )}
+      </div>
+
+      {/* Hidden container to force browser to cache and initialize all font styles immediately */}
+      <div
+        style={{
+          position: "absolute",
+          opacity: 0,
+          pointerEvents: "none",
+          zIndex: -9999,
+          height: 0,
+          width: 0,
+          overflow: "hidden",
+          whiteSpace: "nowrap"
+        }}
+      >
+        {TYPOGRAPHY_STYLES.map((style, idx) => (
+          <span
+            key={idx}
+            style={{
+              fontFamily: style.fontFamily,
+              fontWeight: style.fontWeight,
+              fontStyle: style.fontStyle,
+            }}
+          >
+            Hello
+          </span>
+        ))}
       </div>
     </motion.div>
   );

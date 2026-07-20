@@ -38,7 +38,7 @@ body {
 
 /* Force single typography system across the entire application */
 body, p, li, label, input, textarea, button, a, span, div, section, h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-sans) !important;
+  font-family: var(--font-sans);
 }
 
 /* ─── H1: Page/Component Main Heading (32px, Bold 700) ─── */
