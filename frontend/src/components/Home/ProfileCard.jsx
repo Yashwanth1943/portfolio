@@ -325,8 +325,30 @@ const ProfileCardComponent = ({
       <div ref={shellRef} className="pc-card-shell">
         <section className="pc-card">
           <div className="pc-inside">
+            {/* Pointer-based border glow */}
+            <div className="pc-border-glow" />
+
+            {/* Floating background mesh glows */}
+            <div className="pc-bg-glows">
+              <div className="pc-bg-glow glow-1" />
+              <div className="pc-bg-glow glow-2" />
+              <div className="pc-bg-glow glow-3" />
+            </div>
+
             <div className="pc-shine" />
             <div className="pc-glare" />
+
+            {/* Top User Info Details */}
+            {showUserInfo && (
+              <div className="pc-content">
+                <div className="pc-details">
+                  <h3>{name}</h3>
+                  <p>{title}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Main Avatar Cutout */}
             <div className="pc-content pc-avatar-content">
               <img
                 className="avatar"
@@ -339,6 +361,24 @@ const ProfileCardComponent = ({
                 }}
               />
             </div>
+
+            {/* Bottom HUD User Info Card */}
+            {showUserInfo && (
+              <div className="pc-user-info">
+                <div className="pc-user-details">
+                  <div className="pc-mini-avatar">
+                    <img src={miniAvatarUrl || avatarUrl} alt={`${name} mini-avatar`} />
+                  </div>
+                  <div className="pc-user-text">
+                    <span className="pc-handle">@{handle}</span>
+                    <span className="pc-status">{status}</span>
+                  </div>
+                </div>
+                <button className="pc-contact-btn" onClick={handleContactClick}>
+                  {contactText}
+                </button>
+              </div>
+            )}
           </div>
         </section>
       </div>

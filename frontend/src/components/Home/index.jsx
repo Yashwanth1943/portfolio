@@ -89,8 +89,10 @@ const HomePage = () => {
                 onContactClick={() => {
                   document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
                 }}
-                behindGlowEnabled={false}
-                innerGradient="linear-gradient(180deg, #0d0d12 0%, #0B0B0F 100%)"
+                behindGlowEnabled={true}
+                behindGlowColor="rgba(167, 139, 250, 0.4)"
+                behindGlowSize="60%"
+                innerGradient="radial-gradient(circle at 50% 20%, rgba(139, 92, 246, 0.18) 0%, rgba(56, 189, 248, 0.04) 50%, #080612 100%)"
               />
             </div>
           </div>
