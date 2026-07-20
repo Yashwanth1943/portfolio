@@ -362,23 +362,7 @@ const ProfileCardComponent = ({
               />
             </div>
 
-            {/* Bottom HUD User Info Card */}
-            {showUserInfo && (
-              <div className="pc-user-info">
-                <div className="pc-user-details">
-                  <div className="pc-mini-avatar">
-                    <img src={miniAvatarUrl || avatarUrl} alt={`${name} mini-avatar`} />
-                  </div>
-                  <div className="pc-user-text">
-                    <span className="pc-handle">@{handle}</span>
-                    <span className="pc-status">{status}</span>
-                  </div>
-                </div>
-                <button className="pc-contact-btn" onClick={handleContactClick}>
-                  {contactText}
-                </button>
-              </div>
-            )}
+
           </div>
         </section>
       </div>

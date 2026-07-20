@@ -16,7 +16,7 @@ const About = () => {
           <div className="about-action-row fade-up">
             <button
               className="about-resume-btn"
-              onClick={() => window.open("https://docs.google.com/document/d/1PX_f7s5vBFJtN2gB9mT3pO59m1vrjbRS/edit?usp=sharing&ouid=108083425254803010176&rtpof=true&sd=true", "_blank")}
+              onClick={() => window.open(import.meta.env.BASE_URL + "resume.pdf", "_blank")}
             >
               Download Resume
             </button>
@@ -34,8 +34,8 @@ const About = () => {
             
             <div className="about-highlight-item">
               <span className="item-title">Experience</span>
-              <h3 className="item-value">Frontend Intern</h3>
-              <p className="item-desc">Worked as a Frontend Developer Intern at Arah Infotech.</p>
+              <h3 className="item-value">2 Internships</h3>
+              <p className="item-desc">Software & Web Developer Intern at App Genesis.</p>
             </div>
 
             <div className="about-highlight-item">
