@@ -212,12 +212,7 @@ const First5Seconds = memo(({ onComplete }) => {
 
       {step === 0 && (
         <div className="splash-rings-container">
-          <motion.div
-            className="splash-center-dot"
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 0.8 }}
-            transition={{ type: "spring", stiffness: 300, damping: 25 }}
-          />
+
           <motion.div
             className="splash-ring ring-1"
             initial={{ scale: 0.1, opacity: 0.6 }}
